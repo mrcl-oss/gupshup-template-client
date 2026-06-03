@@ -30,10 +30,46 @@ public class CarouselCard {
     }
 
     public void setButtons(List<Button> buttons) {
-        if (buttons != null && buttons.size() > 2) {
-            throw new IllegalArgumentException("Carousel cards can have at most 2 buttons");
+        if (buttons != null) {
+            if (buttons.isEmpty() || buttons.size() > 2) {
+                throw new IllegalArgumentException("Carousel cards must have 1 or 2 buttons");
+            }
+            for (Button button : buttons) {
+                validateButtonType(button);
+            }
         }
         this.buttons = buttons;
+    }
+
+    private void validateButtonType(Button button) {
+        if (!(button instanceof io.github.mrcloss.gupshup.domain.button.QuickReplyButton) &&
+            !(button instanceof io.github.mrcloss.gupshup.domain.button.PhoneNumberButton) &&
+            !(button instanceof io.github.mrcloss.gupshup.domain.button.UrlButton)) {
+            throw new IllegalArgumentException("Carousel cards only accept QuickReply, PhoneNumber and URL Buttons");
+        }
+    }
+
+    public void validate() {
+        if (buttons == null || buttons.isEmpty() || buttons.size() > 2) {
+            throw new IllegalStateException("Carousel cards must have 1 or 2 buttons");
+        }
+        for (Button button : buttons) {
+            button.validate();
+        }
+        if (headerType == null) {
+            throw new IllegalStateException("Carousel card header type is required");
+        }
+        if (body == null || body.trim().isEmpty()) {
+            throw new IllegalStateException("Carousel card body is required");
+        }
+        if (variableExamples != null && !variableExamples.isEmpty()) {
+            for (int i = 1; i <= variableExamples.size(); i++) {
+                String placeholder = "{{" + i + "}}";
+                if (!body.contains(placeholder)) {
+                    throw new IllegalStateException("Carousel card body must contain " + placeholder + " when " + variableExamples.size() + " variable examples are provided");
+                }
+            }
+        }
     }
 
     public List<String> getVariableExamples() {

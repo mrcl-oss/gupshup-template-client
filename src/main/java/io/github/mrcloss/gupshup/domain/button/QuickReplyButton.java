@@ -11,4 +11,9 @@ public class QuickReplyButton extends Button {
     public QuickReplyButton(String text) {
         super(ButtonType.QUICK_REPLY, text);
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+    }
 }

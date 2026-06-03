@@ -11,4 +11,9 @@ public class MPMButton extends Button {
     public MPMButton(String text) {
         super(ButtonType.MPM, text);
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+    }
 }

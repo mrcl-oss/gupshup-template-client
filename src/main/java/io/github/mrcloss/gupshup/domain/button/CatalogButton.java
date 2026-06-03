@@ -11,4 +11,9 @@ public class CatalogButton extends Button {
     public CatalogButton(String text) {
         super(ButtonType.CATALOG, text);
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+    }
 }

@@ -20,4 +20,12 @@ public class StaticUrlButton extends UrlButton {
         validateUrl(url);
         this.url = url;
     }
+
+    @Override
+    public void validate() {
+        super.validate();
+        if (url == null || url.trim().isEmpty()) {
+            throw new IllegalStateException("URL is required for static URL button");
+        }
+    }
 }

@@ -30,6 +30,8 @@ public abstract class Button {
         this.text = text;
     }
 
+    public abstract void validate();
+
     /**
      * Basic validation for text length or content if needed.
      */

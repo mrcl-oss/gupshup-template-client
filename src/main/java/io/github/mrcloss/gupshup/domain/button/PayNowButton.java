@@ -31,4 +31,13 @@ public class PayNowButton extends UrlButton {
     public void setUnderlyingUrlButton(UrlButton underlyingUrlButton) {
         this.underlyingUrlButton = underlyingUrlButton;
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+        if (underlyingUrlButton == null) {
+            throw new IllegalStateException("Underlying URL button is required for Pay Now button");
+        }
+        underlyingUrlButton.validate();
+    }
 }

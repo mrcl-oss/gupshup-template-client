@@ -36,4 +36,18 @@ public class DynamicUrlButton extends UrlButton {
         }
         this.variableExample = variableExample;
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+        if (urlTemplate == null || urlTemplate.trim().isEmpty()) {
+            throw new IllegalStateException("URL template is required for dynamic URL button");
+        }
+        if (!urlTemplate.contains("{{1}}")) {
+            throw new IllegalStateException("Dynamic URL template must contain '{{1}}' placeholder");
+        }
+        if (variableExample == null || variableExample.trim().isEmpty()) {
+            throw new IllegalStateException("Variable example is required for dynamic URL button");
+        }
+    }
 }

@@ -34,7 +34,15 @@ public class Template {
     @JsonUnwrapped
     private LTOAttributes ltoAttributes;
 
-    public Template() {
+    public Template(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
+        setElementName(elementName);
+        setLanguageCode(languageCode);
+        setBody(body);
+        setCategory(category);
+        setAppId(appId);
+        setTags(tags);
+        setTemplateType(templateType);
+        setParameterFormat(parameterFormat);
     }
 
     public String getAppId() {
@@ -82,8 +90,16 @@ public class Template {
     }
 
     public void setBody(String body) {
-        if (body != null && body.length() > 1024) {
-            throw new IllegalArgumentException("Template body cannot exceed 1024 characters");
+        if (body != null) {
+            if (body.length() > 1024) {
+                throw new IllegalArgumentException("Template body cannot exceed 1024 characters");
+            }
+            if (body.matches("^\\{\\{\\d+\\}\\}.*")) {
+                throw new IllegalArgumentException("Template body cannot start with a variable");
+            }
+            if (body.matches(".*\\{\\{\\d+\\}\\}\\s*$")) {
+                throw new IllegalArgumentException("Template body cannot end with a variable");
+            }
         }
         this.body = body;
     }
@@ -168,8 +184,11 @@ public class Template {
     }
 
     public void setButtons(List<Button> buttons) {
-        if (buttons != null && buttons.size() > 10) {
-            throw new IllegalArgumentException("A template can have at most 10 buttons");
+        if (buttons != null) {
+            if (buttons.size() > 10) {
+                throw new IllegalArgumentException("A template can have at most 10 buttons");
+            }
+            validateButtons(buttons);
         }
         this.buttons = buttons;
     }
@@ -178,7 +197,58 @@ public class Template {
         if (this.buttons.size() >= 10) {
             throw new IllegalStateException("A template can have at most 10 buttons");
         }
+        List<Button> newButtons = new ArrayList<>(this.buttons);
+        newButtons.add(button);
+        validateButtons(newButtons);
         this.buttons.add(button);
+    }
+
+    private void validateButtons(List<Button> buttons) {
+        long urlButtonsCount = buttons.stream()
+                .filter(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.URL)
+                .count();
+        if (urlButtonsCount > 2) {
+            throw new IllegalArgumentException("A template can have at most 2 URL buttons");
+        }
+
+        long phoneButtonsCount = buttons.stream()
+                .filter(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.PHONE_NUMBER)
+                .count();
+        if (phoneButtonsCount > 1) {
+            throw new IllegalArgumentException("A template can have at most 1 Phone Number button");
+        }
+
+        long payNowButtonsCount = buttons.stream()
+                .filter(b -> b instanceof io.github.mrcloss.gupshup.domain.button.PayNowButton)
+                .count();
+        if (payNowButtonsCount > 1) {
+            throw new IllegalArgumentException("A template can have at most 1 Pay Now button");
+        }
+
+        for (Button button : buttons) {
+            button.validate();
+            if (button instanceof io.github.mrcloss.gupshup.domain.button.OTPButton && !(this instanceof AuthenticationTemplate)) {
+                throw new IllegalStateException("OTPButton is only allowed in AuthenticationTemplates");
+            }
+            if (button instanceof io.github.mrcloss.gupshup.domain.button.MPMButton && !(this instanceof ProductTemplate)) {
+                throw new IllegalStateException("MPMButton is only allowed in ProductTemplates");
+            }
+            if (button instanceof io.github.mrcloss.gupshup.domain.button.CatalogButton && !(this instanceof CatalogTemplate)) {
+                throw new IllegalStateException("CatalogButton is only allowed in CatalogTemplates");
+            }
+        }
+
+        if (variableExamples != null && !variableExamples.isEmpty()) {
+            if (body == null) {
+                throw new IllegalStateException("Body is required when variable examples are provided");
+            }
+            for (int i = 1; i <= variableExamples.size(); i++) {
+                String placeholder = "{{" + i + "}}";
+                if (!body.contains(placeholder)) {
+                    throw new IllegalStateException("Body must contain " + placeholder + " when " + variableExamples.size() + " variable examples are provided");
+                }
+            }
+        }
     }
 
     public LTOAttributes getLtoAttributes() {
@@ -201,6 +271,49 @@ public class Template {
         }
         if (category == null) {
             throw new IllegalStateException("Category is required");
+        }
+        if (body != null) {
+            if (body.matches("^\\{\\{\\d+\\}\\}.*")) {
+                throw new IllegalStateException("Template body cannot start with a variable");
+            }
+            if (body.matches(".*\\{\\{\\d+\\}\\}\\s*$")) {
+                throw new IllegalStateException("Template body cannot end with a variable");
+            }
+        }
+        validateButtons(buttons);
+
+        boolean hasPayNow = buttons.stream().anyMatch(b -> b instanceof io.github.mrcloss.gupshup.domain.button.PayNowButton);
+        if (hasPayNow) {
+            if (templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.TEXT) {
+                throw new IllegalStateException("Pay Now button is only allowed in TEXT templates");
+            }
+        }
+
+        if (category == io.github.mrcloss.gupshup.domain.enums.TemplateCategory.UTILITY) {
+            if (templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.GIF ||
+                templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.CATALOG ||
+                templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.PRODUCT ||
+                templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.CAROUSEL) {
+                throw new IllegalStateException("UTILITY category templates cannot be of type GIF, CATALOG, PRODUCT, or CAROUSEL");
+            }
+        }
+
+        if (ltoAttributes != null) {
+            if (templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.TEXT &&
+                templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.IMAGE &&
+                templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.VIDEO) {
+                throw new IllegalStateException("LTO templates are only allowed for TEXT, IMAGE, or VIDEO types");
+            }
+            boolean hasUrlButton = buttons.stream().anyMatch(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.URL);
+            if (!hasUrlButton) {
+                throw new IllegalStateException("LTO templates must have at least one URL button");
+            }
+            if (ltoAttributes.isHasExpiration()) {
+                boolean hasCopyCodeButton = buttons.stream().anyMatch(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.COPY_CODE);
+                if (!hasCopyCodeButton) {
+                    throw new IllegalStateException("LTO templates with expiration must have at least one COPY_CODE button");
+                }
+            }
         }
     }
 }

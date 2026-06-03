@@ -28,4 +28,12 @@ public class PhoneNumberButton extends Button {
             throw new IllegalArgumentException("Invalid phone number format. It should follow E.164 format (e.g., +1234567890)");
         }
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+        if (phoneNumber == null) {
+            throw new IllegalStateException("Phone number is required");
+        }
+    }
 }

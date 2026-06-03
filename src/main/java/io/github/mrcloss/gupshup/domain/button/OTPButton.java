@@ -25,4 +25,12 @@ public class OTPButton extends Button {
     public void setOtpType(OTPButtonType otpType) {
         this.otpType = otpType;
     }
+
+    @Override
+    public void validate() {
+        validateText(getText());
+        if (otpType == null) {
+            throw new IllegalStateException("OTP type is required");
+        }
+    }
 }

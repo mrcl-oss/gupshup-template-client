@@ -16,9 +16,14 @@ public abstract class UrlButton extends Button {
         if (url == null || url.trim().isEmpty()) {
             throw new IllegalArgumentException("URL cannot be null or empty");
         }
-        // Basic URL validation
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            throw new IllegalArgumentException("URL must start with http:// or https://");
+        // Strict URL validation
+        if (!url.matches("^https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}.*")) {
+            throw new IllegalArgumentException("URL must follow a valid structure like 'https://example.com'");
         }
+    }
+
+    @Override
+    public void validate() {
+        validateText(getText());
     }
 }

@@ -26,3 +26,5 @@ replay_pid*
 GEMINI.md
 .agents/
 skills-lock.json
+
+target/
