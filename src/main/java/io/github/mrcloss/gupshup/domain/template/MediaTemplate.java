@@ -1,23 +1,24 @@
 package io.github.mrcloss.gupshup.domain.template;
 
+import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
+import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
+import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
 public abstract class MediaTemplate extends Template {
     private String mediaId;
+    @Setter(AccessLevel.NONE)
     private String mediaUrl;
 
-    public MediaTemplate(String elementName, io.github.mrcloss.gupshup.domain.enums.LanguageCode languageCode, String body, io.github.mrcloss.gupshup.domain.enums.TemplateCategory category, String appId, java.util.List<String> tags, io.github.mrcloss.gupshup.domain.enums.TemplateType templateType, io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat parameterFormat) {
+    public MediaTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
         super(elementName, languageCode, body, category, appId, tags, templateType, parameterFormat);
-    }
-
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
-    }
-
-    public String getMediaUrl() {
-        return mediaUrl;
     }
 
     public abstract String[] getAllowedExtensions();

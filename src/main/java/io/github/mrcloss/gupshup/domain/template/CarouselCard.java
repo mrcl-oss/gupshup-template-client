@@ -2,7 +2,14 @@ package io.github.mrcloss.gupshup.domain.template;
 
 import java.util.List;
 import io.github.mrcloss.gupshup.domain.button.Button;
+import io.github.mrcloss.gupshup.domain.button.PhoneNumberButton;
+import io.github.mrcloss.gupshup.domain.button.QuickReplyButton;
+import io.github.mrcloss.gupshup.domain.button.UrlButton;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CarouselCard {
 
     public enum CarouselCardHeaderType {
@@ -17,18 +24,6 @@ public class CarouselCard {
     private String mediaUrl;
     private CarouselCardHeaderType headerType;
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public List<Button> getButtons() {
-        return buttons;
-    }
-
     public void setButtons(List<Button> buttons) {
         if (buttons != null) {
             if (buttons.isEmpty() || buttons.size() > 2) {
@@ -42,9 +37,9 @@ public class CarouselCard {
     }
 
     private void validateButtonType(Button button) {
-        if (!(button instanceof io.github.mrcloss.gupshup.domain.button.QuickReplyButton) &&
-            !(button instanceof io.github.mrcloss.gupshup.domain.button.PhoneNumberButton) &&
-            !(button instanceof io.github.mrcloss.gupshup.domain.button.UrlButton)) {
+        if (!(button instanceof QuickReplyButton) &&
+            !(button instanceof PhoneNumberButton) &&
+            !(button instanceof UrlButton)) {
             throw new IllegalArgumentException("Carousel cards only accept QuickReply, PhoneNumber and URL Buttons");
         }
     }
@@ -72,38 +67,10 @@ public class CarouselCard {
         }
     }
 
-    public List<String> getVariableExamples() {
-        return variableExamples;
-    }
-
-    public void setVariableExamples(List<String> variableExamples) {
-        this.variableExamples = variableExamples;
-    }
-
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
-    }
-
-    public String getMediaUrl() {
-        return mediaUrl;
-    }
-
     public void setMediaUrl(String mediaUrl) {
         if (mediaUrl != null && !mediaUrl.startsWith("http://") && !mediaUrl.startsWith("https://")) {
             throw new IllegalArgumentException("Media URL must start with http:// or https://");
         }
         this.mediaUrl = mediaUrl;
-    }
-
-    public CarouselCardHeaderType getHeaderType() {
-        return headerType;
-    }
-
-    public void setHeaderType(CarouselCardHeaderType headerType) {
-        this.headerType = headerType;
     }
 }

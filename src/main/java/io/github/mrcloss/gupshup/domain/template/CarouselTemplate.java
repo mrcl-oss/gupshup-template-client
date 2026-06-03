@@ -1,17 +1,24 @@
 package io.github.mrcloss.gupshup.domain.template;
 
 import java.util.ArrayList;
+import java.util.List;
+import io.github.mrcloss.gupshup.domain.button.Button;
+import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
+import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
 import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CarouselTemplate extends Template {
+    @Setter(AccessLevel.NONE)
     private ArrayList<CarouselCard> cards;
 
-    public CarouselTemplate(String elementName, io.github.mrcloss.gupshup.domain.enums.LanguageCode languageCode, String body, io.github.mrcloss.gupshup.domain.enums.TemplateCategory category, String appId, java.util.List<String> tags, io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat parameterFormat) {
+    public CarouselTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.CAROUSEL, parameterFormat);
-    }
-
-    public ArrayList<CarouselCard> getCards() {
-        return cards;
     }
 
     public void setCards(ArrayList<CarouselCard> cards) {
@@ -22,7 +29,7 @@ public class CarouselTemplate extends Template {
     }
 
     @Override
-    public void setButtons(java.util.List<io.github.mrcloss.gupshup.domain.button.Button> buttons) {
+    public void setButtons(List<Button> buttons) {
         if (buttons != null && !buttons.isEmpty()) {
             throw new IllegalArgumentException("Carousel template itself cannot have buttons, only the cards");
         }
@@ -30,7 +37,7 @@ public class CarouselTemplate extends Template {
     }
 
     @Override
-    public void addButton(io.github.mrcloss.gupshup.domain.button.Button button) {
+    public void addButton(Button button) {
         throw new IllegalStateException("Carousel template itself cannot have buttons, only the cards");
     }
 

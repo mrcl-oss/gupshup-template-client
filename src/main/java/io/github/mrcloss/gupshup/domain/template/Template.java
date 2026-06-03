@@ -7,12 +7,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import io.github.mrcloss.gupshup.domain.button.Button;
+import io.github.mrcloss.gupshup.domain.button.CatalogButton;
+import io.github.mrcloss.gupshup.domain.button.MPMButton;
+import io.github.mrcloss.gupshup.domain.button.OTPButton;
+import io.github.mrcloss.gupshup.domain.button.PayNowButton;
+import io.github.mrcloss.gupshup.domain.enums.ButtonType;
 import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
 import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
 import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
 import io.github.mrcloss.gupshup.domain.enums.TemplateStatus;
 import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Template {
     private String appId;
     private TemplateStatus status;
@@ -35,58 +46,14 @@ public class Template {
     private LTOAttributes ltoAttributes;
 
     public Template(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
-        setElementName(elementName);
-        setLanguageCode(languageCode);
+        this.elementName = elementName;
+        this.languageCode = languageCode;
         setBody(body);
-        setCategory(category);
-        setAppId(appId);
-        setTags(tags);
-        setTemplateType(templateType);
-        setParameterFormat(parameterFormat);
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public TemplateStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TemplateStatus status) {
-        this.status = status;
-    }
-
-    public TemplateCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(TemplateCategory category) {
         this.category = category;
-    }
-
-    public Instant getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Instant createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Instant getModifiedOn() {
-        return modifiedOn;
-    }
-
-    public void setModifiedOn(Instant modifiedOn) {
-        this.modifiedOn = modifiedOn;
-    }
-
-    public String getBody() {
-        return body;
+        this.appId = appId;
+        this.tags = tags;
+        this.templateType = templateType;
+        this.parameterFormat = parameterFormat;
     }
 
     public void setBody(String body) {
@@ -104,83 +71,11 @@ public class Template {
         this.body = body;
     }
 
-    public List<String> getVariableExamples() {
-        return variableExamples;
-    }
-
-    public void setVariableExamples(List<String> variableExamples) {
-        this.variableExamples = variableExamples;
-    }
-
-    public String getElementName() {
-        return elementName;
-    }
-
-    public void setElementName(String elementName) {
-        this.elementName = elementName;
-    }
-
-    public LanguageCode getLanguageCode() {
-        return languageCode;
-    }
-
-    public void setLanguageCode(LanguageCode languageCode) {
-        this.languageCode = languageCode;
-    }
-
-    public TemplateParameterFormat getParameterFormat() {
-        return parameterFormat;
-    }
-
-    public void setParameterFormat(TemplateParameterFormat parameterFormat) {
-        this.parameterFormat = parameterFormat;
-    }
-
-    public TemplateType getTemplateType() {
-        return templateType;
-    }
-
-    public void setTemplateType(TemplateType templateType) {
-        this.templateType = templateType;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public String getFooter() {
-        return footer;
-    }
-
     public void setFooter(String footer) {
         if (footer != null && footer.length() > 60) {
             throw new IllegalArgumentException("Template footer cannot exceed 60 characters");
         }
         this.footer = footer;
-    }
-
-    public int getMessageValidity() {
-        return messageValidity;
-    }
-
-    public void setMessageValidity(int messageValidity) {
-        this.messageValidity = messageValidity;
-    }
-
-    public List<Button> getButtons() {
-        return buttons;
     }
 
     public void setButtons(List<Button> buttons) {
@@ -192,6 +87,7 @@ public class Template {
         }
         this.buttons = buttons;
     }
+
 
     public void addButton(Button button) {
         if (this.buttons.size() >= 10) {
@@ -205,21 +101,21 @@ public class Template {
 
     private void validateButtons(List<Button> buttons) {
         long urlButtonsCount = buttons.stream()
-                .filter(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.URL)
+                .filter(b -> b.getType() == ButtonType.URL)
                 .count();
         if (urlButtonsCount > 2) {
             throw new IllegalArgumentException("A template can have at most 2 URL buttons");
         }
 
         long phoneButtonsCount = buttons.stream()
-                .filter(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.PHONE_NUMBER)
+                .filter(b -> b.getType() == ButtonType.PHONE_NUMBER)
                 .count();
         if (phoneButtonsCount > 1) {
             throw new IllegalArgumentException("A template can have at most 1 Phone Number button");
         }
 
         long payNowButtonsCount = buttons.stream()
-                .filter(b -> b instanceof io.github.mrcloss.gupshup.domain.button.PayNowButton)
+                .filter(b -> b instanceof PayNowButton)
                 .count();
         if (payNowButtonsCount > 1) {
             throw new IllegalArgumentException("A template can have at most 1 Pay Now button");
@@ -227,13 +123,13 @@ public class Template {
 
         for (Button button : buttons) {
             button.validate();
-            if (button instanceof io.github.mrcloss.gupshup.domain.button.OTPButton && !(this instanceof AuthenticationTemplate)) {
+            if (button instanceof OTPButton && !(this instanceof AuthenticationTemplate)) {
                 throw new IllegalStateException("OTPButton is only allowed in AuthenticationTemplates");
             }
-            if (button instanceof io.github.mrcloss.gupshup.domain.button.MPMButton && !(this instanceof ProductTemplate)) {
+            if (button instanceof MPMButton && !(this instanceof ProductTemplate)) {
                 throw new IllegalStateException("MPMButton is only allowed in ProductTemplates");
             }
-            if (button instanceof io.github.mrcloss.gupshup.domain.button.CatalogButton && !(this instanceof CatalogTemplate)) {
+            if (button instanceof CatalogButton && !(this instanceof CatalogTemplate)) {
                 throw new IllegalStateException("CatalogButton is only allowed in CatalogTemplates");
             }
         }
@@ -249,14 +145,6 @@ public class Template {
                 }
             }
         }
-    }
-
-    public LTOAttributes getLtoAttributes() {
-        return ltoAttributes;
-    }
-
-    public void setLtoAttributes(LTOAttributes ltoAttributes) {
-        this.ltoAttributes = ltoAttributes;
     }
 
     /**
@@ -282,34 +170,34 @@ public class Template {
         }
         validateButtons(buttons);
 
-        boolean hasPayNow = buttons.stream().anyMatch(b -> b instanceof io.github.mrcloss.gupshup.domain.button.PayNowButton);
+        boolean hasPayNow = buttons.stream().anyMatch(b -> b instanceof PayNowButton);
         if (hasPayNow) {
-            if (templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.TEXT) {
+            if (templateType != TemplateType.TEXT) {
                 throw new IllegalStateException("Pay Now button is only allowed in TEXT templates");
             }
         }
 
-        if (category == io.github.mrcloss.gupshup.domain.enums.TemplateCategory.UTILITY) {
-            if (templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.GIF ||
-                templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.CATALOG ||
-                templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.PRODUCT ||
-                templateType == io.github.mrcloss.gupshup.domain.enums.TemplateType.CAROUSEL) {
+        if (category == TemplateCategory.UTILITY) {
+            if (templateType == TemplateType.GIF ||
+                templateType == TemplateType.CATALOG ||
+                templateType == TemplateType.PRODUCT ||
+                templateType == TemplateType.CAROUSEL) {
                 throw new IllegalStateException("UTILITY category templates cannot be of type GIF, CATALOG, PRODUCT, or CAROUSEL");
             }
         }
 
         if (ltoAttributes != null) {
-            if (templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.TEXT &&
-                templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.IMAGE &&
-                templateType != io.github.mrcloss.gupshup.domain.enums.TemplateType.VIDEO) {
+            if (templateType != TemplateType.TEXT &&
+                templateType != TemplateType.IMAGE &&
+                templateType != TemplateType.VIDEO) {
                 throw new IllegalStateException("LTO templates are only allowed for TEXT, IMAGE, or VIDEO types");
             }
-            boolean hasUrlButton = buttons.stream().anyMatch(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.URL);
+            boolean hasUrlButton = buttons.stream().anyMatch(b -> b.getType() == ButtonType.URL);
             if (!hasUrlButton) {
                 throw new IllegalStateException("LTO templates must have at least one URL button");
             }
             if (ltoAttributes.isHasExpiration()) {
-                boolean hasCopyCodeButton = buttons.stream().anyMatch(b -> b.getType() == io.github.mrcloss.gupshup.domain.enums.ButtonType.COPY_CODE);
+                boolean hasCopyCodeButton = buttons.stream().anyMatch(b -> b.getType() == ButtonType.COPY_CODE);
                 if (!hasCopyCodeButton) {
                     throw new IllegalStateException("LTO templates with expiration must have at least one COPY_CODE button");
                 }

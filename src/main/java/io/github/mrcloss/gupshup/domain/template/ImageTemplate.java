@@ -1,9 +1,18 @@
 package io.github.mrcloss.gupshup.domain.template;
 
+import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
+import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
 import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.List;
+
+@Getter
+@Setter
 public class ImageTemplate extends MediaTemplate {
-    public ImageTemplate(String elementName, io.github.mrcloss.gupshup.domain.enums.LanguageCode languageCode, String body, io.github.mrcloss.gupshup.domain.enums.TemplateCategory category, String appId, java.util.List<String> tags, io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat parameterFormat) {
+    public ImageTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.IMAGE, parameterFormat);
     }
 

@@ -1,20 +1,28 @@
 package io.github.mrcloss.gupshup.domain.template;
 
-import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.button.Button;
 import io.github.mrcloss.gupshup.domain.button.CopyCodeButton;
-import java.util.Collections;
+import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
+import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Collections;
+import java.util.List;
+
+@Getter
+@Setter
 public class AuthenticationTemplate extends TextTemplate {
+    @Setter(AccessLevel.NONE)
     private boolean addSecurityRecommendation;
+    @Setter(AccessLevel.NONE)
     private int codeExpirationMinutes;
 
-    public AuthenticationTemplate(String elementName, io.github.mrcloss.gupshup.domain.enums.LanguageCode languageCode, String body, String appId, java.util.List<String> tags, io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat parameterFormat) {
+    public AuthenticationTemplate(String elementName, LanguageCode languageCode, String body, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
         super(elementName, languageCode, body, TemplateCategory.AUTHENTICATION, appId, tags, parameterFormat);
         updateButton();
-    }
-
-    public boolean isAddSecurityRecommendation() {
-        return addSecurityRecommendation;
     }
 
     public void setAddSecurityRecommendation(boolean addSecurityRecommendation) {
@@ -48,10 +56,6 @@ public class AuthenticationTemplate extends TextTemplate {
         }
     }
 
-    public int getCodeExpirationMinutes() {
-        return codeExpirationMinutes;
-    }
-
     public void setCodeExpirationMinutes(int codeExpirationMinutes) {
         if (codeExpirationMinutes < 0) {
             throw new IllegalArgumentException("Code expiration minutes cannot be negative");
@@ -78,12 +82,12 @@ public class AuthenticationTemplate extends TextTemplate {
     }
 
     @Override
-    public void setButtons(java.util.List<io.github.mrcloss.gupshup.domain.button.Button> buttons) {
+    public void setButtons(List<Button> buttons) {
         throw new UnsupportedOperationException("Authentication template buttons cannot be modified");
     }
 
     @Override
-    public void addButton(io.github.mrcloss.gupshup.domain.button.Button button) {
+    public void addButton(Button button) {
         throw new UnsupportedOperationException("Authentication template buttons cannot be modified");
     }
 }

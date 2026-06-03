@@ -1,23 +1,32 @@
 package io.github.mrcloss.gupshup.domain.template;
 
 import java.util.List;
-import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import io.github.mrcloss.gupshup.domain.button.PayNowButton;
+import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
+import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
+import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TextTemplate extends Template {
+    @Setter(AccessLevel.NONE)
     private String header;
     private List<String> variableHeaderExamples;
 
-    public TextTemplate(String elementName, io.github.mrcloss.gupshup.domain.enums.LanguageCode languageCode, String body, io.github.mrcloss.gupshup.domain.enums.TemplateCategory category, String appId, List<String> tags, io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat parameterFormat) {
+    public TextTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.TEXT, parameterFormat);
-    }
-
-    public String getHeader() {
-        return header;
     }
 
     public void setHeader(String header) {
         if (header != null) {
-            java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header);
+            Matcher matcher = Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header);
             int count = 0;
             while (matcher.find()) {
                 count++;
@@ -29,18 +38,10 @@ public class TextTemplate extends Template {
         this.header = header;
     }
 
-    public List<String> getVariableHeaderExamples() {
-        return variableHeaderExamples;
-    }
-
-    public void setVariableHeaderExamples(List<String> variableHeaderExamples) {
-        this.variableHeaderExamples = variableHeaderExamples;
-    }
-
     @Override
     public void validate() {
         super.validate();
-        boolean hasPayNow = getButtons().stream().anyMatch(b -> b instanceof io.github.mrcloss.gupshup.domain.button.PayNowButton);
+        boolean hasPayNow = getButtons().stream().anyMatch(b -> b instanceof PayNowButton);
         if (hasPayNow && header != null && !header.trim().isEmpty()) {
             throw new IllegalStateException("Text templates with Pay Now button cannot have a header");
         }

@@ -1,22 +1,32 @@
 package io.github.mrcloss.gupshup.domain.template;
 
-import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import io.github.mrcloss.gupshup.domain.button.Button;
 import io.github.mrcloss.gupshup.domain.button.CatalogButton;
-import java.util.Collections;
+import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
+import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
+import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
+import io.github.mrcloss.gupshup.domain.enums.TemplateType;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Collections;
+import java.util.List;
+
+@Getter
+@Setter
 public class CatalogTemplate extends Template {
-    public CatalogTemplate(String elementName, io.github.mrcloss.gupshup.domain.enums.LanguageCode languageCode, String body, io.github.mrcloss.gupshup.domain.enums.TemplateCategory category, String appId, java.util.List<String> tags, io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat parameterFormat) {
+    public CatalogTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.CATALOG, parameterFormat);
         super.setButtons(Collections.singletonList(new CatalogButton("View catalog")));
     }
 
     @Override
-    public void setButtons(java.util.List<io.github.mrcloss.gupshup.domain.button.Button> buttons) {
+    public void setButtons(List<Button> buttons) {
         throw new UnsupportedOperationException("Catalog template buttons cannot be modified");
     }
 
     @Override
-    public void addButton(io.github.mrcloss.gupshup.domain.button.Button button) {
+    public void addButton(Button button) {
         throw new UnsupportedOperationException("Catalog template buttons cannot be modified");
     }
 }

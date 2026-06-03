@@ -1,8 +1,14 @@
 package io.github.mrcloss.gupshup.domain.button;
 
 import io.github.mrcloss.gupshup.domain.enums.ButtonType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class PhoneNumberButton extends Button {
+    @Setter(AccessLevel.NONE)
     private String phoneNumber;
 
     public PhoneNumberButton() {
@@ -12,10 +18,6 @@ public class PhoneNumberButton extends Button {
     public PhoneNumberButton(String text, String phoneNumber) {
         super(ButtonType.PHONE_NUMBER, text);
         setPhoneNumber(phoneNumber);
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {

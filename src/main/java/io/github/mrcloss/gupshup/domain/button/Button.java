@@ -1,34 +1,18 @@
 package io.github.mrcloss.gupshup.domain.button;
 
 import io.github.mrcloss.gupshup.domain.enums.ButtonType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Button {
     private ButtonType type;
     private String text;
-
-    public Button() {
-    }
-
-    public Button(ButtonType type, String text) {
-        this.type = type;
-        this.text = text;
-    }
-
-    public ButtonType getType() {
-        return type;
-    }
-
-    public void setType(ButtonType type) {
-        this.type = type;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 
     public abstract void validate();
 

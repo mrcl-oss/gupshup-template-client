@@ -1,7 +1,15 @@
 package io.github.mrcloss.gupshup.domain.button;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DynamicUrlButton extends UrlButton {
+    @Setter(AccessLevel.NONE)
     private String urlTemplate;
+    @Setter(AccessLevel.NONE)
     private String variableExample;
 
     public DynamicUrlButton() {
@@ -14,20 +22,12 @@ public class DynamicUrlButton extends UrlButton {
         setVariableExample(variableExample);
     }
 
-    public String getUrlTemplate() {
-        return urlTemplate;
-    }
-
     public void setUrlTemplate(String urlTemplate) {
         validateUrl(urlTemplate);
         if (!urlTemplate.contains("{{1}}")) {
             throw new IllegalArgumentException("Dynamic URL template must contain '{{1}}' placeholder");
         }
         this.urlTemplate = urlTemplate;
-    }
-
-    public String getVariableExample() {
-        return variableExample;
     }
 
     public void setVariableExample(String variableExample) {

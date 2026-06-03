@@ -1,6 +1,13 @@
 package io.github.mrcloss.gupshup.domain.button;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class StaticUrlButton extends UrlButton {
+    @Setter(AccessLevel.NONE)
     private String url;
 
     public StaticUrlButton() {
@@ -10,10 +17,6 @@ public class StaticUrlButton extends UrlButton {
     public StaticUrlButton(String text, String url) {
         super(text);
         setUrl(url);
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     public void setUrl(String url) {

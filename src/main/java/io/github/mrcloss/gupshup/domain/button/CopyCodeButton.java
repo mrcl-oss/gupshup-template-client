@@ -1,8 +1,14 @@
 package io.github.mrcloss.gupshup.domain.button;
 
 import io.github.mrcloss.gupshup.domain.enums.ButtonType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CopyCodeButton extends Button {
+    @Setter(AccessLevel.NONE)
     private String exampleValue;
 
     public CopyCodeButton() {
@@ -12,10 +18,6 @@ public class CopyCodeButton extends Button {
     public CopyCodeButton(String text, String exampleValue) {
         super(ButtonType.COPY_CODE, text);
         setExampleValue(exampleValue);
-    }
-
-    public String getExampleValue() {
-        return exampleValue;
     }
 
     public void setExampleValue(String exampleValue) {
