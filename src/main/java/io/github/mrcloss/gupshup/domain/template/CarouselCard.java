@@ -24,6 +24,20 @@ public class CarouselCard {
     private String mediaUrl;
     private CarouselCardHeaderType headerType;
 
+    public CarouselCard() {
+    }
+
+    public CarouselCard(String body, CarouselCardHeaderType headerType) {
+        this.body = body;
+        this.headerType = headerType;
+    }
+
+    public CarouselCard(String body, List<String> variableExamples, CarouselCardHeaderType headerType) {
+        this.body = body;
+        this.variableExamples = variableExamples;
+        this.headerType = headerType;
+    }
+
     public void setButtons(List<Button> buttons) {
         if (buttons != null) {
             if (buttons.isEmpty() || buttons.size() > 2) {
@@ -57,7 +71,15 @@ public class CarouselCard {
         if (body == null || body.trim().isEmpty()) {
             throw new IllegalStateException("Carousel card body is required");
         }
-        if (variableExamples != null && !variableExamples.isEmpty()) {
+
+        boolean hasExamples = variableExamples != null && !variableExamples.isEmpty();
+        boolean hasVariablesInBody = body != null && java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(body).find();
+
+        if (hasVariablesInBody && !hasExamples) {
+            throw new IllegalStateException("Carousel card body cannot contain variables if variable examples are not provided");
+        }
+
+        if (hasExamples) {
             for (int i = 1; i <= variableExamples.size(); i++) {
                 String placeholder = "{{" + i + "}}";
                 if (!body.contains(placeholder)) {

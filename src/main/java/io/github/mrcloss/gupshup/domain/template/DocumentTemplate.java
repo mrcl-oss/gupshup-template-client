@@ -16,6 +16,10 @@ public class DocumentTemplate extends MediaTemplate {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.DOCUMENT, parameterFormat);
     }
 
+    public DocumentTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.DOCUMENT, parameterFormat);
+    }
+
     @Override
     public String[] getAllowedExtensions() {
         return new String[]{".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx", ".txt"};

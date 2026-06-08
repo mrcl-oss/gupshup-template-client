@@ -16,7 +16,11 @@ import java.util.List;
 @Setter
 public class ProductTemplate extends Template {
     public ProductTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
-        super(elementName, languageCode, body, category, appId, tags, TemplateType.PRODUCT, parameterFormat);
+        this(elementName, languageCode, body, null, category, appId, tags, parameterFormat);
+    }
+
+    public ProductTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.PRODUCT, parameterFormat);
         super.setButtons(Collections.singletonList(new MPMButton("View items")));
     }
 

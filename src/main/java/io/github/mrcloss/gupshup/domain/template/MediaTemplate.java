@@ -18,7 +18,11 @@ public abstract class MediaTemplate extends Template {
     private String mediaUrl;
 
     public MediaTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
-        super(elementName, languageCode, body, category, appId, tags, templateType, parameterFormat);
+        this(elementName, languageCode, body, null, category, appId, tags, templateType, parameterFormat);
+    }
+
+    public MediaTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, templateType, parameterFormat);
     }
 
     public abstract String[] getAllowedExtensions();

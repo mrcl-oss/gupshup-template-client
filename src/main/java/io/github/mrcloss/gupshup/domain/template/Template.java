@@ -39,16 +39,21 @@ public class Template {
     private List<String> tags; // vertical
     private String reason;
     private String footer;
-    private int messageValidity;
+    private Integer messageValidity;
     private List<Button> buttons = new ArrayList<>();
 
     @JsonUnwrapped
     private LTOAttributes ltoAttributes;
 
     public Template(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
+        this(elementName, languageCode, body, null, category, appId, tags, templateType, parameterFormat);
+    }
+
+    public Template(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateType templateType, TemplateParameterFormat parameterFormat) {
         this.elementName = elementName;
         this.languageCode = languageCode;
         setBody(body);
+        this.variableExamples = variableExamples;
         this.category = category;
         this.appId = appId;
         this.tags = tags;
@@ -168,6 +173,14 @@ public class Template {
                 throw new IllegalStateException("Template body cannot end with a variable");
             }
         }
+        
+        boolean hasExamples = variableExamples != null && !variableExamples.isEmpty();
+        boolean hasVariablesInBody = body != null && java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(body).find();
+
+        if (hasVariablesInBody && !hasExamples) {
+            throw new IllegalStateException("Body cannot contain variables if variable examples are not provided");
+        }
+
         validateButtons(buttons);
 
         boolean hasPayNow = buttons.stream().anyMatch(b -> b instanceof PayNowButton);

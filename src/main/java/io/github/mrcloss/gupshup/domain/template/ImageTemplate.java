@@ -16,6 +16,10 @@ public class ImageTemplate extends MediaTemplate {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.IMAGE, parameterFormat);
     }
 
+    public ImageTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.IMAGE, parameterFormat);
+    }
+
     @Override
     public String[] getAllowedExtensions() {
         return new String[]{".jpg", ".jpeg", ".png", ".webp"};

@@ -24,6 +24,32 @@ public class TextTemplate extends Template {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.TEXT, parameterFormat);
     }
 
+    public TextTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.TEXT, parameterFormat);
+    }
+
+    public TextTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat, String header) {
+        super(elementName, languageCode, body, category, appId, tags, TemplateType.TEXT, parameterFormat);
+        this.header = header;
+    }
+
+    public TextTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat, String header) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.TEXT, parameterFormat);
+        this.header = header;
+    }
+
+    public TextTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat, String header, List<String> variableHeaderExamples) {
+        super(elementName, languageCode, body, category, appId, tags, TemplateType.TEXT, parameterFormat);
+        this.header = header;
+        this.variableHeaderExamples = variableHeaderExamples;
+    }
+
+    public TextTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat, String header, List<String> variableHeaderExamples) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.TEXT, parameterFormat);
+        this.header = header;
+        this.variableHeaderExamples = variableHeaderExamples;
+    }
+
     public void setHeader(String header) {
         if (header != null) {
             Matcher matcher = Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header);
@@ -46,7 +72,14 @@ public class TextTemplate extends Template {
             throw new IllegalStateException("Text templates with Pay Now button cannot have a header");
         }
 
-        if (variableHeaderExamples != null && !variableHeaderExamples.isEmpty()) {
+        boolean hasHeaderExamples = variableHeaderExamples != null && !variableHeaderExamples.isEmpty();
+        boolean hasVariablesInHeader = header != null && Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header).find();
+
+        if (hasVariablesInHeader && !hasHeaderExamples) {
+            throw new IllegalStateException("Header cannot contain variables if variable header examples are not provided");
+        }
+
+        if (hasHeaderExamples) {
             if (header == null) {
                 throw new IllegalStateException("Header is required when variable header examples are provided");
             }

@@ -16,7 +16,11 @@ import java.util.List;
 @Setter
 public class CatalogTemplate extends Template {
     public CatalogTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
-        super(elementName, languageCode, body, category, appId, tags, TemplateType.CATALOG, parameterFormat);
+        this(elementName, languageCode, body, null, category, appId, tags, parameterFormat);
+    }
+
+    public CatalogTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.CATALOG, parameterFormat);
         super.setButtons(Collections.singletonList(new CatalogButton("View catalog")));
     }
 

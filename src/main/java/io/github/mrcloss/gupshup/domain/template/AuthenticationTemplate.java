@@ -21,7 +21,11 @@ public class AuthenticationTemplate extends TextTemplate {
     private int codeExpirationMinutes;
 
     public AuthenticationTemplate(String elementName, LanguageCode languageCode, String body, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
-        super(elementName, languageCode, body, TemplateCategory.AUTHENTICATION, appId, tags, parameterFormat);
+        this(elementName, languageCode, body, null, appId, tags, parameterFormat);
+    }
+
+    public AuthenticationTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, TemplateCategory.AUTHENTICATION, appId, tags, parameterFormat);
         updateButton();
     }
 

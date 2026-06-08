@@ -13,6 +13,10 @@ import java.util.List;
 @Setter
 public class LocationTemplate extends Template {
     public LocationTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
-        super(elementName, languageCode, body, category, appId, tags, TemplateType.LOCATION, parameterFormat);
+        this(elementName, languageCode, body, null, category, appId, tags, parameterFormat);
+    }
+
+    public LocationTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.LOCATION, parameterFormat);
     }
 }

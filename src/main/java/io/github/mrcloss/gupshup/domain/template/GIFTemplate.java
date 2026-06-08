@@ -16,6 +16,10 @@ public class GIFTemplate extends MediaTemplate {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.GIF, parameterFormat);
     }
 
+    public GIFTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.GIF, parameterFormat);
+    }
+
     @Override
     public String[] getAllowedExtensions() {
         return new String[]{".gif"};

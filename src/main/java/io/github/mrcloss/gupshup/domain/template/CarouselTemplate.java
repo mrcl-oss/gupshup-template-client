@@ -18,7 +18,11 @@ public class CarouselTemplate extends Template {
     private ArrayList<CarouselCard> cards;
 
     public CarouselTemplate(String elementName, LanguageCode languageCode, String body, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
-        super(elementName, languageCode, body, category, appId, tags, TemplateType.CAROUSEL, parameterFormat);
+        this(elementName, languageCode, body, null, category, appId, tags, parameterFormat);
+    }
+
+    public CarouselTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.CAROUSEL, parameterFormat);
     }
 
     public void setCards(ArrayList<CarouselCard> cards) {

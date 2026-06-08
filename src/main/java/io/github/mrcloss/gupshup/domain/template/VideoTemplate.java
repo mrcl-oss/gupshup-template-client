@@ -16,6 +16,10 @@ public class VideoTemplate extends MediaTemplate {
         super(elementName, languageCode, body, category, appId, tags, TemplateType.VIDEO, parameterFormat);
     }
 
+    public VideoTemplate(String elementName, LanguageCode languageCode, String body, List<String> variableExamples, TemplateCategory category, String appId, List<String> tags, TemplateParameterFormat parameterFormat) {
+        super(elementName, languageCode, body, variableExamples, category, appId, tags, TemplateType.VIDEO, parameterFormat);
+    }
+
     @Override
     public String[] getAllowedExtensions() {
         return new String[]{".mp4", ".3gp"};
