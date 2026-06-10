@@ -26,7 +26,7 @@ public class DeleteTemplateExample {
                 .apiKey(apiKey)
                 .build();
 
-        String templateName = "marketing_promo_01";
+        String templateName = "borra_esto_porfa_2";
 
         // Delete the template
         try {
@@ -34,7 +34,6 @@ public class DeleteTemplateExample {
             DeleteTemplateResponse response = client.deleteTemplate(templateName);
             
             System.out.println("Status: " + response.getStatus());
-            System.out.println("Message: " + response.getMessage());
             if (response.getError() != null) {
                 System.out.println("Error: " + response.getError());
             }

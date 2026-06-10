@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.yourusername</groupId>
+    <groupId>io.github.mrcloss</groupId>
     <artifactId>gupshup-template-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Gupshup Template Client</name>
     <description>A robust and scalable Java client for managing Gupshup WhatsApp Templates</description>
-    <url>https://github.com/yourusername/gupshup-template-client</url>
+    <url>https://github.com/mrcloss/gupshup-template-client</url>
 
     <licenses>
         <license>

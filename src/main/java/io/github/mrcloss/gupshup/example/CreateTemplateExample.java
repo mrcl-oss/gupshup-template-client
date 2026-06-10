@@ -9,7 +9,6 @@ import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * A simple example of how to use the GupshupClient to create a WhatsApp template.
@@ -35,18 +34,14 @@ public class CreateTemplateExample {
 
         // Create a simple text template
         TextTemplate template = new TextTemplate(
-                "marketing_promo_01",           // elementName
-                LanguageCode.ENGLISH,           // languageCode
-                "Hello {{1}}, welcome to our service!", // body
-                List.of("Marc"),
+                "borra_esto_porfa_2",           // elementName
+                LanguageCode.SPANISH_ES,           // languageCode
+                "Hola, que tal estas?", // body
                 TemplateCategory.MARKETING,      // category
                 appId,                          // appId
-                Collections.singletonList("PROMO"), // tags
+                Collections.singletonList("TAG"), // tags
                 TemplateParameterFormat.POSITIONAL // parameterFormat
         );
-
-        // Add a footer (optional)
-        template.setFooter("Reply STOP to opt out.");
 
         // Create the template
         try {
@@ -54,7 +49,6 @@ public class CreateTemplateExample {
             CreateTemplateResponse response = client.createTemplate(template);
             
             System.out.println("Status: " + response.getStatus());
-            System.out.println("Message: " + response.getMessage());
             if (response.getTemplate() != null) {
                 System.out.println("Template ID: " + response.getTemplate().getId());
                 System.out.println("Namespace: " + response.getTemplate().getNamespace());
