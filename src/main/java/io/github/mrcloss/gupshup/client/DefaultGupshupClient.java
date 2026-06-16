@@ -3,10 +3,16 @@ package io.github.mrcloss.gupshup.client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.github.mrcloss.gupshup.domain.template.Template;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.QueryParams;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.SendTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.TemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateResponse;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesResponse;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.https.GupshupHttpService;
 import io.github.mrcloss.gupshup.infrastructure.https.JdkGupshupHttpService;
 import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupRequestMapper;
@@ -22,14 +28,17 @@ public class DefaultGupshupClient implements GupshupClient {
 
     private final GupshupHttpService httpService;
     private final ObjectMapper objectMapper;
+    private final String templateUrl;
+    private final String sendTemplateUrl;
 
     private DefaultGupshupClient(Builder builder) {
         this.objectMapper = builder.objectMapper != null ? builder.objectMapper : createDefaultObjectMapper();
         HttpClient httpClient = builder.httpClient != null ? builder.httpClient : HttpClient.newHttpClient();
-        String baseUrl = String.format("https://api.gupshup.io/wa/app/%s/template", builder.appId);
+        templateUrl = String.format("https://api.gupshup.io/wa/app/%s/template", builder.appId);
+        sendTemplateUrl = templateUrl + "/v1/msg";
         
         this.httpService = builder.httpService != null ? builder.httpService : 
-                new JdkGupshupHttpService(builder.apiKey, baseUrl, httpClient, objectMapper);
+                new JdkGupshupHttpService(builder.apiKey, httpClient, objectMapper);
     }
 
     public static Builder builder() {
@@ -37,27 +46,54 @@ public class DefaultGupshupClient implements GupshupClient {
     }
 
     @Override
+    public GetTemplatesResponse getTemplates(QueryParams queryParams) {
+        Map<String, Object> queryParamsMap = convertToMap(queryParams);
+        return httpService.getWithParams(templateUrl, queryParamsMap, GetTemplatesResponse.class);
+    }
+
+    @Override
+    public GetTemplateResponse getTemplate(String templateId) {
+        return httpService.getWithParams(templateUrl + "/" + templateId, null, GetTemplateResponse.class);
+    }
+
+    @Override
     public CreateTemplateResponse createTemplate(Template template) {
         template.validate();
         Map<String, Object> body = convertToMap(GupshupRequestMapper.map(template));
-        return httpService.postForm("", body, CreateTemplateResponse.class);
+        return httpService.postForm(templateUrl, body, CreateTemplateResponse.class);
     }
 
     @Override
     public CompletableFuture<CreateTemplateResponse> createTemplateAsync(Template template) {
         template.validate();
         Map<String, Object> body = convertToMap(GupshupRequestMapper.map(template));
-        return httpService.postFormAsync("", body, CreateTemplateResponse.class);
+        return httpService.postFormAsync(templateUrl, body, CreateTemplateResponse.class);
     }
 
     @Override
     public DeleteTemplateResponse deleteTemplate(String templateName) {
-        return httpService.delete("/" + templateName, DeleteTemplateResponse.class);
+        return httpService.delete(templateUrl + "/" + templateName, DeleteTemplateResponse.class);
     }
 
     @Override
     public CompletableFuture<DeleteTemplateResponse> deleteTemplateAsync(String templateName) {
-        return httpService.deleteAsync("/" + templateName, DeleteTemplateResponse.class);
+        return httpService.deleteAsync(templateUrl + "/" + templateName, DeleteTemplateResponse.class);
+    }
+
+    @Override
+    public SendTemplateResponse sendTemplate(SendTemplateRequest sendTemplate) {
+        Map<String, Object> body = convertToMap(sendTemplate);
+        return httpService.postForm(sendTemplateUrl, body, SendTemplateResponse.class);
+    }
+
+    private Map<String, Object> convertToMap(QueryParams queryParams) {
+        Map<String, Object> map = objectMapper.convertValue(queryParams, new TypeReference<Map<String, Object>>() {});
+        return map;
+    }
+
+    private Map<String, Object> convertToMap(SendTemplateRequest request) {
+        Map<String, Object> map = objectMapper.convertValue(request, new TypeReference<Map<String, Object>>() {});
+        return map;
     }
 
     private Map<String, Object> convertToMap(TemplateRequest request) {

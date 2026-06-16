@@ -34,9 +34,9 @@ public class CreateTemplateExample {
 
         // Create a simple text template
         TextTemplate template = new TextTemplate(
-                "borra_esto_porfa_2",           // elementName
+                "borra_esto_porfa_3",           // elementName
                 LanguageCode.SPANISH_ES,           // languageCode
-                "Hola, que tal estas?", // body
+                "Hola, que tal estas? Esto es una prueba", // body
                 TemplateCategory.MARKETING,      // category
                 appId,                          // appId
                 Collections.singletonList("TAG"), // tags
