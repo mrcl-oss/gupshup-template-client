@@ -1,3 +1,4 @@
+# .github/workflows/publish.yml
 name: Publish to Maven Central
 
 on:
@@ -28,14 +29,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-          # ID of the target server in pom.xml and settings.xml
+          # ID of the target server defined in pom.xml and generated settings.xml
           server-id: ossrh
-          # Refers to the env variables defined below in the run step
+          # Environment variables mapped to maven credentials
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           # GPG configuration for signing artifacts
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Run Tests
+        # Fail-fast mechanism: ensures code integrity before attempting deployment
+        run: mvn -B test
 
       - name: Build and Publish to Maven Central
         run: |
