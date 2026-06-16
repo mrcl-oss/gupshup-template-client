@@ -14,10 +14,15 @@ public class GupshupTemplate {
     private String id;
     private String appId;
     private String elementName;
+    private String externalId;
+    private String reason;
     private String languageCode;
     private String languagePolicy;
+    private String oldCategory;
     private String category;
+    private String internalCategory;
     private String templateType;
+    private String internalType;
     private String status;
     private String state;
     private String quality;

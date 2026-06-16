@@ -20,15 +20,33 @@ import java.util.stream.Collectors;
 public class JdkGupshupHttpService implements GupshupHttpService {
 
     private final String apiKey;
-    private final String baseUrl;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    public JdkGupshupHttpService(String apiKey, String baseUrl, HttpClient httpClient, ObjectMapper objectMapper) {
+    public JdkGupshupHttpService(String apiKey, HttpClient httpClient, ObjectMapper objectMapper) {
         this.apiKey = apiKey;
-        this.baseUrl = baseUrl;
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public <T extends BaseGupshupResponse> T getWithParams(String path, Map<String, Object> queryParams, Class<T> responseType) {
+        try {
+            String finalPath = buildQueryString(path, queryParams);
+
+            HttpRequest request = buildBaseRequest(path)
+                .uri(URI.create(finalPath))
+                .GET()
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return handleResponse(response, responseType);
+
+        } catch (GupshupApiException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GupshupApiException("Failed to execute GET request: " + e.getMessage(), 0, null);
+        }
     }
 
     @Override
@@ -48,6 +66,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
             throw new GupshupApiException("Failed to execute POST request: " + e.getMessage(), 0, null);
         }
     }
+
 
     @Override
     public <T extends BaseGupshupResponse> CompletableFuture<T> postFormAsync(String path, Map<String, Object> body, Class<T> responseType) {
@@ -94,10 +113,10 @@ public class JdkGupshupHttpService implements GupshupHttpService {
             return CompletableFuture.failedFuture(new GupshupApiException("Failed to start async DELETE request: " + e.getMessage(), 0, null));
         }
     }
-
+    
     private HttpRequest.Builder buildBaseRequest(String path) {
         return HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + path))
+                .uri(URI.create(path))
                 .header("apikey", apiKey)
                 .header("Accept", "application/json");
     }
@@ -132,6 +151,24 @@ public class JdkGupshupHttpService implements GupshupHttpService {
                 .collect(Collectors.joining("&"));
     }
 
+    private String buildQueryString(String path, Map<String, Object> queryParams) { 
+
+        String finalPath = path;
+            
+        if (queryParams != null && !queryParams.isEmpty()) {
+            String queryString = queryParams.entrySet().stream()
+                    .filter(e -> e.getValue() != null)
+                    .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8) + "=" 
+                            + URLEncoder.encode(e.getValue().toString(), StandardCharsets.UTF_8))
+                    .collect(Collectors.joining("&"));
+            
+            String separator = path.contains("?") ? "&" : "?";
+            finalPath = path + separator + queryString;
+        }
+
+        return finalPath;
+    }
+
     private <T extends BaseGupshupResponse> T handleResponse(HttpResponse<String> response, Class<T> responseType) {
         String body = response.body();
         int statusCode = response.statusCode();
@@ -152,7 +189,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
                 return gupshupResponse;
             } else {
                 String errorMessage = gupshupResponse.getError() != null ? gupshupResponse.getError() :
-                                     (gupshupResponse.getMessage() != null ? gupshupResponse.getMessage() : "Gupshup API error");
+                                    (gupshupResponse.getMessage() != null ? gupshupResponse.getMessage() : "Gupshup API error");
                 throw new GupshupApiException(errorMessage, statusCode, body);
             }
         } catch (GupshupApiException e) {

@@ -11,6 +11,17 @@ import java.util.concurrent.CompletableFuture;
 public interface GupshupHttpService {
 
     /**
+     * Executes a GET request with URL-encoded query parameters.
+     *
+     * @param <T> The type of the response.
+     * @param path The relative path to the endpoint.
+     * @param queryParams The query parameters to append to the URL as a map.
+     * @param responseType The class of the response type.
+     * @return The response from Gupshup.
+     */
+    <T extends BaseGupshupResponse> T getWithParams(String path, Map<String, Object> queryParams, Class<T> responseType);
+
+    /**
      * Executes a POST request with form-urlencoded body.
      *
      * @param path The relative path to the endpoint.
