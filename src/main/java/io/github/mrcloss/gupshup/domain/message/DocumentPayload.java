@@ -5,28 +5,26 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DocumentPayload extends GupshupMessage{
-    
-    private final DocumentWraper document;
+public class DocumentPayload extends GupshupMessage {
 
-    public DocumentPayload(String link, String id, String filename) {
-        super(MessageType.DOCUMENT);
-        document = new DocumentWraper(link, id, filename);
+  private final DocumentWraper document;
+
+  public DocumentPayload(String link, String id, String filename) {
+    super(MessageType.DOCUMENT);
+    document = new DocumentWraper(link, id, filename);
+  }
+
+  @Getter
+  public static class DocumentWraper {
+
+    private final String link;
+    private final String id;
+    private final String filename;
+
+    public DocumentWraper(String link, String id, String filename) {
+      this.link = link;
+      this.id = id;
+      this.filename = filename;
     }
-
-    @Getter
-    public static class DocumentWraper {
-
-        private final String link;
-        private final String id;
-        private final String filename;
-
-        public DocumentWraper(String link, String id, String filename) {
-            this.link = link;
-            this.id = id;
-            this.filename = filename;
-        }
-
-    } 
-
+  }
 }

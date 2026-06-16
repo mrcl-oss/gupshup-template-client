@@ -7,5 +7,4 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CatalogTemplateRequest extends TemplateRequest {
-}
+public class CatalogTemplateRequest extends TemplateRequest {}

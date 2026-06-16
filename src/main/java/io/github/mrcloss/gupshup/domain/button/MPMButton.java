@@ -7,17 +7,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MPMButton extends Button {
-    
-    public MPMButton() {
-        super.setType(ButtonType.MPM);
-    }
 
-    public MPMButton(String text) {
-        super(ButtonType.MPM, text);
-    }
+  public MPMButton() {
+    super.setType(ButtonType.MPM);
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
-    }
+  public MPMButton(String text) {
+    super(ButtonType.MPM, text);
+  }
+
+  @Override
+  public void validate() {
+    validateText(getText());
+  }
 }

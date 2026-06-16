@@ -7,47 +7,49 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DynamicUrlButton extends UrlButton {
-    @Setter(AccessLevel.NONE)
-    private String urlTemplate;
-    @Setter(AccessLevel.NONE)
-    private String variableExample;
+  @Setter(AccessLevel.NONE)
+  private String urlTemplate;
 
-    public DynamicUrlButton() {
-        super();
-    }
+  @Setter(AccessLevel.NONE)
+  private String variableExample;
 
-    public DynamicUrlButton(String text, String urlTemplate, String variableExample) {
-        super(text);
-        setUrlTemplate(urlTemplate);
-        setVariableExample(variableExample);
-    }
+  public DynamicUrlButton() {
+    super();
+  }
 
-    public void setUrlTemplate(String urlTemplate) {
-        validateUrl(urlTemplate);
-        if (!urlTemplate.contains("{{1}}")) {
-            throw new IllegalArgumentException("Dynamic URL template must contain '{{1}}' placeholder");
-        }
-        this.urlTemplate = urlTemplate;
-    }
+  public DynamicUrlButton(String text, String urlTemplate, String variableExample) {
+    super(text);
+    setUrlTemplate(urlTemplate);
+    setVariableExample(variableExample);
+  }
 
-    public void setVariableExample(String variableExample) {
-        if (variableExample == null || variableExample.trim().isEmpty()) {
-            throw new IllegalArgumentException("Variable example cannot be null or empty for dynamic URL");
-        }
-        this.variableExample = variableExample;
+  public void setUrlTemplate(String urlTemplate) {
+    validateUrl(urlTemplate);
+    if (!urlTemplate.contains("{{1}}")) {
+      throw new IllegalArgumentException("Dynamic URL template must contain '{{1}}' placeholder");
     }
+    this.urlTemplate = urlTemplate;
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
-        if (urlTemplate == null || urlTemplate.trim().isEmpty()) {
-            throw new IllegalStateException("URL template is required for dynamic URL button");
-        }
-        if (!urlTemplate.contains("{{1}}")) {
-            throw new IllegalStateException("Dynamic URL template must contain '{{1}}' placeholder");
-        }
-        if (variableExample == null || variableExample.trim().isEmpty()) {
-            throw new IllegalStateException("Variable example is required for dynamic URL button");
-        }
+  public void setVariableExample(String variableExample) {
+    if (variableExample == null || variableExample.trim().isEmpty()) {
+      throw new IllegalArgumentException(
+          "Variable example cannot be null or empty for dynamic URL");
     }
+    this.variableExample = variableExample;
+  }
+
+  @Override
+  public void validate() {
+    validateText(getText());
+    if (urlTemplate == null || urlTemplate.trim().isEmpty()) {
+      throw new IllegalStateException("URL template is required for dynamic URL button");
+    }
+    if (!urlTemplate.contains("{{1}}")) {
+      throw new IllegalStateException("Dynamic URL template must contain '{{1}}' placeholder");
+    }
+    if (variableExample == null || variableExample.trim().isEmpty()) {
+      throw new IllegalStateException("Variable example is required for dynamic URL button");
+    }
+  }
 }

@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SendTemplateResponse extends BaseGupshupResponse {
-    String status;
-    String messageId;
+  String status;
+  String messageId;
 }

@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class MediaTemplateRequest extends TemplateRequest {
-    private String mediaId;
-    private String mediaUrl;
+  private String mediaId;
+  private String mediaUrl;
 }

@@ -7,28 +7,26 @@ import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
 import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
 import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import io.github.mrcloss.gupshup.domain.template.LTOAttributes;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TemplateRequest {
-    private String appId;
-    private TemplateCategory category;
-    private String content;
-    private String example;
-    private String elementName;
-    private LanguageCode languageCode;
-    private TemplateParameterFormat parameterFormat;
-    private TemplateType templateType;
-    private String vertical;
-    private String footer;
-    private Integer messageValidity;
-    private List<ButtonRequest> buttons;
+  private String appId;
+  private TemplateCategory category;
+  private String content;
+  private String example;
+  private String elementName;
+  private LanguageCode languageCode;
+  private TemplateParameterFormat parameterFormat;
+  private TemplateType templateType;
+  private String vertical;
+  private String footer;
+  private Integer messageValidity;
+  private List<ButtonRequest> buttons;
 
-    @JsonUnwrapped
-    private LTOAttributes ltoAttributes;
+  @JsonUnwrapped private LTOAttributes ltoAttributes;
 }

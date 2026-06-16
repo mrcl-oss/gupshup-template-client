@@ -7,17 +7,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class QuickReplyButton extends Button {
-    
-    public QuickReplyButton() {
-        super.setType(ButtonType.QUICK_REPLY);
-    }
 
-    public QuickReplyButton(String text) {
-        super(ButtonType.QUICK_REPLY, text);
-    }
+  public QuickReplyButton() {
+    super.setType(ButtonType.QUICK_REPLY);
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
-    }
+  public QuickReplyButton(String text) {
+    super(ButtonType.QUICK_REPLY, text);
+  }
+
+  @Override
+  public void validate() {
+    validateText(getText());
+  }
 }

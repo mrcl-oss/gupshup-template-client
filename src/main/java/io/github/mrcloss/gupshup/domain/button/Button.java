@@ -11,17 +11,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class Button {
-    private ButtonType type;
-    private String text;
+  private ButtonType type;
+  private String text;
 
-    public abstract void validate();
+  public abstract void validate();
 
-    /**
-     * Basic validation for text length or content if needed.
-     */
-    protected void validateText(String text) {
-        if (text == null || text.trim().isEmpty()) {
-            throw new IllegalArgumentException("Button text cannot be null or empty");
-        }
+  /** Basic validation for text length or content if needed. */
+  protected void validateText(String text) {
+    if (text == null || text.trim().isEmpty()) {
+      throw new IllegalArgumentException("Button text cannot be null or empty");
     }
+  }
 }

@@ -7,26 +7,26 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OTPButton extends Button {
-    public enum OTPButtonType {
-        COPY_CODE
-    }
+  public enum OTPButtonType {
+    COPY_CODE
+  }
 
-    private OTPButtonType otpType;
+  private OTPButtonType otpType;
 
-    public OTPButton() {
-        super.setType(ButtonType.OTP);
-    }
+  public OTPButton() {
+    super.setType(ButtonType.OTP);
+  }
 
-    public OTPButton(String text, OTPButtonType otpType) {
-        super(ButtonType.OTP, text);
-        this.otpType = otpType;
-    }
+  public OTPButton(String text, OTPButtonType otpType) {
+    super(ButtonType.OTP, text);
+    this.otpType = otpType;
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
-        if (otpType == null) {
-            throw new IllegalStateException("OTP type is required");
-        }
+  @Override
+  public void validate() {
+    validateText(getText());
+    if (otpType == null) {
+      throw new IllegalStateException("OTP type is required");
     }
+  }
 }

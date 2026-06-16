@@ -7,5 +7,4 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AuthenticationTemplateRequest extends TextTemplateRequest {
-}
+public class AuthenticationTemplateRequest extends TextTemplateRequest {}

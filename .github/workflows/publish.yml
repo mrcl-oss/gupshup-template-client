@@ -1,0 +1,52 @@
+name: Publish to Maven Central
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Target version to publish (optional, e.g., 1.0.0)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+          # ID of the target server in pom.xml and settings.xml
+          server-id: ossrh
+          # Refers to the env variables defined below in the run step
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          # GPG configuration for signing artifacts
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Build and Publish to Maven Central
+        run: |
+          # Update pom version if a custom version is specified via workflow_dispatch
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            mvn -B versions:set -DnewVersion=${{ github.event.inputs.version }} -DgenerateBackupPoms=false
+          fi
+          
+          # Deploy using the 'release' profile which includes GPG signing and staging plugins
+          mvn -B clean deploy -P release
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

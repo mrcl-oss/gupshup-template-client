@@ -7,5 +7,4 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ImageTemplateRequest extends MediaTemplateRequest {
-}
+public class ImageTemplateRequest extends MediaTemplateRequest {}

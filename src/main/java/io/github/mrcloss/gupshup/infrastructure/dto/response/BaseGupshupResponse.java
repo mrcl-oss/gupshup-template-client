@@ -4,22 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Base class for all Gupshup API responses.
- */
+/** Base class for all Gupshup API responses. */
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class BaseGupshupResponse {
-    private String status;
-    private String message;
-    private String error;
+  private String status;
+  private String message;
+  private String error;
 
-    /**
-     * Helper method to check if the request was successful.
-     * @return true if status is "success"
-     */
-    public boolean isSuccess() {
-        return "success".equalsIgnoreCase(status);
-    }
+  /**
+   * Helper method to check if the request was successful.
+   *
+   * @return true if status is "success"
+   */
+  public boolean isSuccess() {
+    return "success".equalsIgnoreCase(status);
+  }
 }

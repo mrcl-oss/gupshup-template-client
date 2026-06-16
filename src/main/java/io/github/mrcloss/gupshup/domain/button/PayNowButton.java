@@ -7,25 +7,25 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PayNowButton extends UrlButton {
-    private boolean paymentLinkPreview;
-    private UrlButton underlyingUrlButton;
+  private boolean paymentLinkPreview;
+  private UrlButton underlyingUrlButton;
 
-    public PayNowButton() {
-        super.setType(ButtonType.URL); // PayNow is technically a URL button in many implementations
-    }
+  public PayNowButton() {
+    super.setType(ButtonType.URL); // PayNow is technically a URL button in many implementations
+  }
 
-    public PayNowButton(String text, boolean paymentLinkPreview, UrlButton underlyingUrlButton) {
-        super(text);
-        this.paymentLinkPreview = paymentLinkPreview;
-        this.underlyingUrlButton = underlyingUrlButton;
-    }
+  public PayNowButton(String text, boolean paymentLinkPreview, UrlButton underlyingUrlButton) {
+    super(text);
+    this.paymentLinkPreview = paymentLinkPreview;
+    this.underlyingUrlButton = underlyingUrlButton;
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
-        if (underlyingUrlButton == null) {
-            throw new IllegalStateException("Underlying URL button is required for Pay Now button");
-        }
-        underlyingUrlButton.validate();
+  @Override
+  public void validate() {
+    validateText(getText());
+    if (underlyingUrlButton == null) {
+      throw new IllegalStateException("Underlying URL button is required for Pay Now button");
     }
+    underlyingUrlButton.validate();
+  }
 }

@@ -2,35 +2,32 @@ package io.github.mrcloss.gupshup.domain.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Represents the structural type and media format of the template.
- */
+/** Represents the structural type and media format of the template. */
 public enum TemplateType {
+  @JsonProperty("TEXT")
+  TEXT,
 
-    @JsonProperty("TEXT")
-    TEXT,
+  @JsonProperty("IMAGE")
+  IMAGE,
 
-    @JsonProperty("IMAGE")
-    IMAGE,
+  @JsonProperty("VIDEO")
+  VIDEO,
 
-    @JsonProperty("VIDEO")
-    VIDEO,
+  @JsonProperty("DOCUMENT")
+  DOCUMENT,
 
-    @JsonProperty("DOCUMENT")
-    DOCUMENT,
+  @JsonProperty("LOCATION")
+  LOCATION,
 
-    @JsonProperty("LOCATION")
-    LOCATION,
+  @JsonProperty("GIF")
+  GIF,
 
-    @JsonProperty("GIF")
-    GIF,
+  @JsonProperty("CATALOG")
+  CATALOG,
 
-    @JsonProperty("CATALOG")
-    CATALOG,
+  @JsonProperty("PRODUCT")
+  PRODUCT,
 
-    @JsonProperty("PRODUCT")
-    PRODUCT,
-
-    @JsonProperty("CAROUSEL")
-    CAROUSEL
+  @JsonProperty("CAROUSEL")
+  CAROUSEL
 }

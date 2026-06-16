@@ -7,17 +7,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CatalogButton extends Button {
-    
-    public CatalogButton() {
-        super.setType(ButtonType.CATALOG);
-    }
 
-    public CatalogButton(String text) {
-        super(ButtonType.CATALOG, text);
-    }
+  public CatalogButton() {
+    super.setType(ButtonType.CATALOG);
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
-    }
+  public CatalogButton(String text) {
+    super(ButtonType.CATALOG, text);
+  }
+
+  @Override
+  public void validate() {
+    validateText(getText());
+  }
 }

@@ -7,28 +7,28 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StaticUrlButton extends UrlButton {
-    @Setter(AccessLevel.NONE)
-    private String url;
+  @Setter(AccessLevel.NONE)
+  private String url;
 
-    public StaticUrlButton() {
-        super();
-    }
+  public StaticUrlButton() {
+    super();
+  }
 
-    public StaticUrlButton(String text, String url) {
-        super(text);
-        setUrl(url);
-    }
+  public StaticUrlButton(String text, String url) {
+    super(text);
+    setUrl(url);
+  }
 
-    public void setUrl(String url) {
-        validateUrl(url);
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    validateUrl(url);
+    this.url = url;
+  }
 
-    @Override
-    public void validate() {
-        super.validate();
-        if (url == null || url.trim().isEmpty()) {
-            throw new IllegalStateException("URL is required for static URL button");
-        }
+  @Override
+  public void validate() {
+    super.validate();
+    if (url == null || url.trim().isEmpty()) {
+      throw new IllegalStateException("URL is required for static URL button");
     }
+  }
 }

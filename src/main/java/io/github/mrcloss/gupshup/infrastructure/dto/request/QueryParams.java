@@ -8,12 +8,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class QueryParams {
-    private int pageNo;
-    private int pageSize;
-    private String templateStatus;
-    private String templateCategory;
-    private String templateType;
-    private String quality;
-    private String languageCode;
-
+  private int pageNo;
+  private int pageSize;
+  private String templateStatus;
+  private String templateCategory;
+  private String templateType;
+  private String quality;
+  private String languageCode;
 }

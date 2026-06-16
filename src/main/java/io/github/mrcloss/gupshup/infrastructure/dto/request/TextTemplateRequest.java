@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TextTemplateRequest extends TemplateRequest {
-    private String header;
-    private String exampleHeader;
+  private String header;
+  private String exampleHeader;
 }

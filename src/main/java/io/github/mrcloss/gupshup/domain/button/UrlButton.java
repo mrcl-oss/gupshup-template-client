@@ -7,27 +7,28 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class UrlButton extends Button {
-    
-    public UrlButton() {
-        super.setType(ButtonType.URL);
-    }
 
-    public UrlButton(String text) {
-        super(ButtonType.URL, text);
-    }
+  public UrlButton() {
+    super.setType(ButtonType.URL);
+  }
 
-    protected void validateUrl(String url) {
-        if (url == null || url.trim().isEmpty()) {
-            throw new IllegalArgumentException("URL cannot be null or empty");
-        }
-        // Strict URL validation
-        if (!url.matches("^https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}.*")) {
-            throw new IllegalArgumentException("URL must follow a valid structure like 'https://example.com'");
-        }
-    }
+  public UrlButton(String text) {
+    super(ButtonType.URL, text);
+  }
 
-    @Override
-    public void validate() {
-        validateText(getText());
+  protected void validateUrl(String url) {
+    if (url == null || url.trim().isEmpty()) {
+      throw new IllegalArgumentException("URL cannot be null or empty");
     }
+    // Strict URL validation
+    if (!url.matches("^https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}.*")) {
+      throw new IllegalArgumentException(
+          "URL must follow a valid structure like 'https://example.com'");
+    }
+  }
+
+  @Override
+  public void validate() {
+    validateText(getText());
+  }
 }
