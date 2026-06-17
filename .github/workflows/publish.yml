@@ -1,5 +1,5 @@
 # .github/workflows/publish.yml
-name: Publish to Maven Central
+name: Publish to Maven Central and GitHub Packages
 
 on:
   release:
@@ -10,11 +10,13 @@ on:
         description: 'Target version to publish (optional, e.g., 1.0.0)'
         required: false
         default: ''
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 permissions:
-  contents: read
+  contents: write
+  packages: write
 
 jobs:
   publish:
@@ -31,29 +33,65 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-          # ID of the target server defined in pom.xml and generated settings.xml
-          server-id: central
-          # Environment variables mapped to maven credentials
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          # GPG configuration for signing artifacts
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Create Maven settings.xml
+        run: |
+          cat <<EOF > settings.xml
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>central</id>
+                <username>\${env.MAVEN_USERNAME}</username>
+                <password>\${env.MAVEN_PASSWORD}</password>
+              </server>
+              <server>
+                <id>github</id>
+                <username>\${env.GITHUB_ACTOR}</username>
+                <password>\${env.GITHUB_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
 
       - name: Run Tests
         # Fail-fast mechanism: ensures code integrity before attempting deployment
         run: mvn -B test
 
-      - name: Build and Publish to Maven Central
+      - name: Configure Release Version
         run: |
-          # Update pom version if a custom version is specified via workflow_dispatch
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            mvn -B versions:set -DnewVersion=${{ github.event.inputs.version }} -DgenerateBackupPoms=false
+          VERSION=""
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG_NAME="${{ github.event.release.tag_name }}"
+            VERSION="${TAG_NAME#v}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
           fi
           
-          # Deploy using the 'release' profile which includes GPG signing and staging plugins
-          mvn -B clean deploy -P release
+          if [ -n "$VERSION" ]; then
+            echo "Setting POM version to $VERSION"
+            mvn -B versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
+          fi
+
+      - name: Build and Publish to Maven Central
+        run: mvn -B clean deploy -P release -s settings.xml
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Build and Publish to GitHub Packages
+        run: mvn -B deploy -DskipTests -s settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'release'
+        with:
+          files: |
+            target/*.jar
+
