@@ -3,8 +3,18 @@ name: Continuous Integration
 on:
   push:
     branches: [ main, master, develop ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'checkstyle.xml'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches: [ main, master, develop ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'checkstyle.xml'
+      - '.github/workflows/ci.yml'
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
