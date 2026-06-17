@@ -11,9 +11,27 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Represents a WhatsApp Catalog template.
+ *
+ * <p>Catalog templates are designed to display a shop inventory button. They include exactly one
+ * static {@link CatalogButton} ("View catalog"), which is automatically added. Custom buttons
+ * cannot be added or modified on a Catalog template.
+ */
 @Getter
 @Setter
 public class CatalogTemplate extends Template {
+  /**
+   * Constructs a new CatalogTemplate without variable examples.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param category the category of the template
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param parameterFormat the format of parameters
+   */
   public CatalogTemplate(
       String elementName,
       LanguageCode languageCode,

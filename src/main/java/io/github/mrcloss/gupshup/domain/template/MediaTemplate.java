@@ -9,6 +9,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Abstract base class for WhatsApp media templates.
+ *
+ * <p>Media templates support attaching an image, video, document, or GIF as a header message,
+ * specified either by a public URL or by a pre-uploaded media ID.
+ */
 @Getter
 @Setter
 public abstract class MediaTemplate extends Template {
@@ -17,6 +23,18 @@ public abstract class MediaTemplate extends Template {
   @Setter(AccessLevel.NONE)
   private String mediaUrl;
 
+  /**
+   * Constructs a new MediaTemplate without variable examples.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param category the category of the template
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param templateType the type of the template (e.g. IMAGE, VIDEO)
+   * @param parameterFormat the format of parameters
+   */
   public MediaTemplate(
       String elementName,
       LanguageCode languageCode,
@@ -60,8 +78,20 @@ public abstract class MediaTemplate extends Template {
         parameterFormat);
   }
 
+  /**
+   * Returns the list of file extensions allowed for this media type.
+   *
+   * @return an array of allowed extensions (e.g. {@code .jpg}, {@code .png})
+   */
   public abstract String[] getAllowedExtensions();
 
+  /**
+   * Sets the media URL for the template.
+   *
+   * @param mediaUrl the public URL of the media asset, must use HTTP or HTTPS and end with an
+   *     allowed extension
+   * @throws IllegalArgumentException if the URL is invalid or does not match the allowed extensions
+   */
   public void setMediaUrl(String mediaUrl) {
     if (mediaUrl != null) {
       if (!mediaUrl.startsWith("http://") && !mediaUrl.startsWith("https://")) {

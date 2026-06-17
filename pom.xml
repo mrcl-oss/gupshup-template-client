@@ -208,6 +208,14 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/mrcl-oss/gupshup-template-client</url>
+        </repository>
+    </distributionManagement>
+
     <profiles>
         <profile>
             <id>release</id>

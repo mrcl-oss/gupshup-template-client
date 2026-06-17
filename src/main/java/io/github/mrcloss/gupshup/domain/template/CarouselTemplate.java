@@ -11,12 +11,30 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Represents a WhatsApp Carousel template.
+ *
+ * <p>Carousel templates contain a list of {@link CarouselCard}s (minimum 2, maximum 10) which can
+ * be scrolled horizontally by users. Each card features its own body, variables, media headers, and
+ * up to 2 buttons.
+ */
 @Getter
 @Setter
 public class CarouselTemplate extends Template {
   @Setter(AccessLevel.NONE)
   private ArrayList<CarouselCard> cards;
 
+  /**
+   * Constructs a new CarouselTemplate without variable examples.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param category the category of the template
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param parameterFormat the format of parameters
+   */
   public CarouselTemplate(
       String elementName,
       LanguageCode languageCode,

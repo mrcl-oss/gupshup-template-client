@@ -10,7 +10,38 @@ import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesRespons
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
 import java.util.concurrent.CompletableFuture;
 
-/** Interface for the Gupshup WhatsApp Template API client. */
+/**
+ * Client interface for interacting with the Gupshup WhatsApp Template API.
+ *
+ * <p>This interface provides synchronous and asynchronous methods to query, create, delete, and
+ * send WhatsApp templates.
+ *
+ * <p>Example usage:
+ *
+ * <pre>{@code
+ * GupshupClient client = GupshupClient.builder()
+ *     .appId("your-app-id")
+ *     .apiKey("your-api-key")
+ *     .build();
+ *
+ * // Create a basic utility text template
+ * TextTemplate template = new TextTemplate(
+ *     "welcome_user_template",
+ *     LanguageCode.ENGLISH,
+ *     "Hello {{1}}! Thanks for registering.",
+ *     TemplateCategory.UTILITY,
+ *     "your-app-id",
+ *     List.of("onboarding"),
+ *     TemplateParameterFormat.POSITIONAL
+ * );
+ * template.setVariableExamples(List.of("Alice"));
+ *
+ * CreateTemplateResponse response = client.createTemplate(template);
+ * if ("success".equals(response.getStatus())) {
+ *     System.out.println("Created template ID: " + response.getTemplate().getId());
+ * }
+ * }</pre>
+ */
 public interface GupshupClient {
 
   /**
@@ -32,47 +63,48 @@ public interface GupshupClient {
   /**
    * Creates a new template on Gupshup.
    *
-   * @param template The template domain object.
-   * @return The response from Gupshup.
+   * @param template the template domain object to be created
+   * @return the response containing creation status and template details
    */
   CreateTemplateResponse createTemplate(Template template);
 
   /**
    * Asynchronously creates a new template on Gupshup.
    *
-   * @param template The template domain object.
-   * @return A CompletableFuture with the response from Gupshup.
+   * @param template the template domain object to be created
+   * @return a CompletableFuture containing the response with creation status and template details
    */
   CompletableFuture<CreateTemplateResponse> createTemplateAsync(Template template);
 
   /**
    * Deletes a template from Gupshup.
    *
-   * @param templateName The name of the template to delete.
-   * @return The response from Gupshup.
+   * @param templateName the name of the template to delete
+   * @return the response indicating success or failure of the deletion
    */
   DeleteTemplateResponse deleteTemplate(String templateName);
 
   /**
    * Asynchronously deletes a template from Gupshup.
    *
-   * @param templateName The name of the template to delete.
-   * @return A CompletableFuture with the response from Gupshup.
+   * @param templateName the name of the template to delete
+   * @return a CompletableFuture containing the response indicating success or failure of the
+   *     deletion
    */
   CompletableFuture<DeleteTemplateResponse> deleteTemplateAsync(String templateName);
 
   /**
    * Sends a template message via Gupshup.
    *
-   * @param request the request payload containing the message details
-   * @return the response from Gupshup.
+   * @param request the request payload containing the message details (recipients, parameters)
+   * @return the response containing the message ID
    */
   SendTemplateResponse sendTemplate(SendTemplateRequest request);
 
   /**
-   * Builder for GupshupClient.
+   * Creates a new builder for configuring and instantiating a GupshupClient.
    *
-   * @return A new Builder instance.
+   * @return a new Builder instance
    */
   static DefaultGupshupClient.Builder builder() {
     return DefaultGupshupClient.builder();

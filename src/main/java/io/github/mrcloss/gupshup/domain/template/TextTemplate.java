@@ -12,6 +12,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Represents a text-only WhatsApp template.
+ *
+ * <p>Unlike media templates, a text template may optionally contain a plain text header with at
+ * most 1 variable placeholder (e.g. {@code Hello {{1}}}).
+ */
 @Getter
 @Setter
 public class TextTemplate extends Template {
@@ -20,6 +26,17 @@ public class TextTemplate extends Template {
 
   private List<String> variableHeaderExamples;
 
+  /**
+   * Constructs a new TextTemplate without variable examples or header.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param category the category of the template
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param parameterFormat the format of parameters
+   */
   public TextTemplate(
       String elementName,
       LanguageCode languageCode,
@@ -131,6 +148,12 @@ public class TextTemplate extends Template {
     this.variableHeaderExamples = variableHeaderExamples;
   }
 
+  /**
+   * Sets the header text for the text template.
+   *
+   * @param header the header text, can contain at most 1 variable placeholder
+   * @throws IllegalArgumentException if the header contains more than 1 variable placeholder
+   */
   public void setHeader(String header) {
     if (header != null) {
       Matcher matcher = Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header);

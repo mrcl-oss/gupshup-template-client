@@ -11,6 +11,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Represents a specialized WhatsApp template for sending One-Time Passwords (OTPs) or verification
+ * codes.
+ *
+ * <p>Authentication templates must belong to the {@code AUTHENTICATION} category, cannot feature a
+ * header, and must include exactly one OTP button (which is either a copy-code button or a one-tap
+ * autofill button).
+ */
 @Getter
 @Setter
 public class AuthenticationTemplate extends TextTemplate {
@@ -20,6 +28,16 @@ public class AuthenticationTemplate extends TextTemplate {
   @Setter(AccessLevel.NONE)
   private int codeExpirationMinutes;
 
+  /**
+   * Constructs a new AuthenticationTemplate without variable examples.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param parameterFormat the format of parameters
+   */
   public AuthenticationTemplate(
       String elementName,
       LanguageCode languageCode,

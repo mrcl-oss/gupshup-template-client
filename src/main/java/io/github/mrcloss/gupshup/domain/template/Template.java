@@ -22,6 +22,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+/**
+ * Represents a base WhatsApp message template in the Gupshup API.
+ *
+ * <p>A template contains structural information such as language code, category, body text,
+ * sequential variable placeholders (e.g. {@code {{1}}}), footer text, and interactive buttons.
+ *
+ * <p>All templates are validated locally before submission to guarantee they comply with Gupshup
+ * and Meta API guidelines.
+ */
 public class Template {
   private String appId;
   private TemplateStatus status;
@@ -42,6 +51,18 @@ public class Template {
 
   @JsonUnwrapped private LTOAttributes ltoAttributes;
 
+  /**
+   * Constructs a new Template without variable examples.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param category the category of the template (e.g. MARKETING, UTILITY, AUTHENTICATION)
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param templateType the type of the template (e.g. TEXT, IMAGE)
+   * @param parameterFormat the format of parameters (POSITIONAL or NAMED)
+   */
   public Template(
       String elementName,
       LanguageCode languageCode,
@@ -63,6 +84,19 @@ public class Template {
         parameterFormat);
   }
 
+  /**
+   * Constructs a new Template with variable examples.
+   *
+   * @param elementName the unique name of the template (alphanumeric, lowercase)
+   * @param languageCode the language of the template
+   * @param body the template message body text
+   * @param variableExamples list of sample values corresponding to placeholders in the body text
+   * @param category the category of the template
+   * @param appId the Gupshup app ID
+   * @param tags optional list of tag labels for the template
+   * @param templateType the type of the template
+   * @param parameterFormat the format of parameters
+   */
   public Template(
       String elementName,
       LanguageCode languageCode,
@@ -84,6 +118,13 @@ public class Template {
     this.parameterFormat = parameterFormat;
   }
 
+  /**
+   * Sets the template message body text.
+   *
+   * @param body the body text, maximum 1024 characters, cannot start or end with a variable
+   * @throws IllegalArgumentException if the body exceeds 1024 characters or starts/ends with a
+   *     variable
+   */
   public void setBody(String body) {
     if (body != null) {
       if (body.length() > 1024) {
@@ -99,6 +140,12 @@ public class Template {
     this.body = body;
   }
 
+  /**
+   * Sets the template footer text.
+   *
+   * @param footer the footer text, maximum 60 characters
+   * @throws IllegalArgumentException if the footer exceeds 60 characters
+   */
   public void setFooter(String footer) {
     if (footer != null && footer.length() > 60) {
       throw new IllegalArgumentException("Template footer cannot exceed 60 characters");
@@ -106,6 +153,13 @@ public class Template {
     this.footer = footer;
   }
 
+  /**
+   * Sets the list of interactive buttons for this template.
+   *
+   * @param buttons the list of buttons, maximum 10 buttons
+   * @throws IllegalArgumentException if buttons count exceeds 10 or violates specific button
+   *     placement rules
+   */
   public void setButtons(List<Button> buttons) {
     if (buttons != null) {
       if (buttons.size() > 10) {
@@ -116,6 +170,13 @@ public class Template {
     this.buttons = buttons;
   }
 
+  /**
+   * Appends an interactive button to the template.
+   *
+   * @param button the button to add
+   * @throws IllegalStateException if the template already has 10 buttons
+   * @throws IllegalArgumentException if adding the button violates placement rules
+   */
   public void addButton(Button button) {
     if (this.buttons.size() >= 10) {
       throw new IllegalStateException("A template can have at most 10 buttons");

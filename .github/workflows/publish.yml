@@ -10,6 +10,8 @@ on:
         description: 'Target version to publish (optional, e.g., 1.0.0)'
         required: false
         default: ''
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 permissions:
   contents: read
