@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/ci.yml/badge.svg)](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/ci.yml)
 [![Publish Status](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/publish.yml/badge.svg)](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/publish.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mrcl-oss/gupshup-template-client.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.mrcl-oss/gupshup-template-client)
-[![License](https://img.shields.io/github/license/mrcl-oss/gupshup-template-client)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue)](https://www.oracle.com/java/technologies/downloads/)
 
 A modern, robust, and type-safe Java client for managing and sending **Gupshup WhatsApp Templates**. Designed following Domain-Driven Design (DDD) principles with built-in validation, synchronous and asynchronous communication, and modern Java features.
@@ -12,15 +12,15 @@ A modern, robust, and type-safe Java client for managing and sending **Gupshup W
 
 ## 🚀 Key Features
 
-*   **Type-Safe Domain Models:** Strong validation rules executed locally before making any network calls.
-*   **Complete WhatsApp Template Support:**
-    *   **Text:** Simple and rich text templates with positional variable bindings.
-    *   **Media:** Image, Video, Document, and GIF templates.
-    *   **Interactive:** Catalog, Product, and Location templates.
-    *   **Advanced:** Authentication (OTP) with copy code buttons, and Carousel templates.
-*   **Flexible Button Types:** Quick Reply, URL (Static & Dynamic), Phone Call, OTP, Copy Code, Pay Now, and MPM.
-*   **Dual Request API:** Fully supports both synchronous and asynchronous (`CompletableFuture`) network calls.
-*   **No Heavy Dependencies:** Built using Java 17 HttpClient and Jackson for lightweight and high-performance JSON serialization.
+* **Type-Safe Domain Models:** Strong validation rules executed locally before making any network calls.
+* **Complete WhatsApp Template Support:**
+  * **Text:** Simple and rich text templates with positional variable bindings.
+  * **Media:** Image, Video, Document, and GIF templates.
+  * **Interactive:** Catalog, Product, and Location templates.
+  * **Advanced:** Authentication (OTP) with copy code buttons, and Carousel templates.
+* **Flexible Button Types:** Quick Reply, URL (Static & Dynamic), Phone Call, OTP, Copy Code, Pay Now, and MPM.
+* **Dual Request API:** Fully supports both synchronous and asynchronous (`CompletableFuture`) network calls.
+* **No Heavy Dependencies:** Built using Java 17 HttpClient and Jackson for lightweight and high-performance JSON serialization.
 
 ---
 
@@ -128,20 +128,27 @@ System.out.println("Message ID: " + response.getMessageId());
 We enforce high standards of code styling, formatting, and test quality.
 
 ### Code Style & Formatting
+
 We use **Google Java Style Guide** formatting via **Spotless** and static checking via **Checkstyle**.
 
-*   **Format code automatically:**
+* **Format code automatically:**
+
     ```bash
     mvn spotless:apply
     ```
-*   **Verify style and formatting:**
+
+* **Verify style and formatting:**
+
     ```bash
     mvn clean verify
     ```
+
     *(Both formatting validations and code style compliance are validated automatically during the Maven `validate` lifecycle and checked in the CI/CD pipeline).*
 
 ### Test Suite
+
 Run unit tests to verify the domain validation rules and API serialization behavior:
+
 ```bash
 mvn clean test
 ```

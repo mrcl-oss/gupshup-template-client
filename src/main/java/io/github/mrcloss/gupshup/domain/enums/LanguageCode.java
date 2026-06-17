@@ -59,8 +59,12 @@ public final class LanguageCode {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     LanguageCode that = (LanguageCode) o;
     return code.equals(that.code);
   }

@@ -1,8 +1,50 @@
 package io.github.mrcloss.gupshup.infrastructure.mapper;
 
-import io.github.mrcloss.gupshup.domain.button.*;
-import io.github.mrcloss.gupshup.domain.template.*;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.*;
+import io.github.mrcloss.gupshup.domain.button.Button;
+import io.github.mrcloss.gupshup.domain.button.CatalogButton;
+import io.github.mrcloss.gupshup.domain.button.CopyCodeButton;
+import io.github.mrcloss.gupshup.domain.button.DynamicUrlButton;
+import io.github.mrcloss.gupshup.domain.button.MPMButton;
+import io.github.mrcloss.gupshup.domain.button.OTPButton;
+import io.github.mrcloss.gupshup.domain.button.PayNowButton;
+import io.github.mrcloss.gupshup.domain.button.PhoneNumberButton;
+import io.github.mrcloss.gupshup.domain.button.QuickReplyButton;
+import io.github.mrcloss.gupshup.domain.button.StaticUrlButton;
+import io.github.mrcloss.gupshup.domain.button.UrlButton;
+import io.github.mrcloss.gupshup.domain.template.AuthenticationTemplate;
+import io.github.mrcloss.gupshup.domain.template.CarouselCard;
+import io.github.mrcloss.gupshup.domain.template.CarouselTemplate;
+import io.github.mrcloss.gupshup.domain.template.CatalogTemplate;
+import io.github.mrcloss.gupshup.domain.template.DocumentTemplate;
+import io.github.mrcloss.gupshup.domain.template.GIFTemplate;
+import io.github.mrcloss.gupshup.domain.template.ImageTemplate;
+import io.github.mrcloss.gupshup.domain.template.LocationTemplate;
+import io.github.mrcloss.gupshup.domain.template.MediaTemplate;
+import io.github.mrcloss.gupshup.domain.template.ProductTemplate;
+import io.github.mrcloss.gupshup.domain.template.Template;
+import io.github.mrcloss.gupshup.domain.template.TextTemplate;
+import io.github.mrcloss.gupshup.domain.template.VideoTemplate;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.AuthenticationTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.ButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.CarouselCardRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.CarouselTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.CatalogButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.CatalogTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.CopyCodeButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.DocumentTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.GIFTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.ImageTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.LocationTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.MPMButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.MediaTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.OTPButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.PhoneNumberButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.ProductTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.QuickReplyButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.TemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.TextTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.UrlButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.VideoTemplateRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,16 +108,36 @@ public class GupshupRequestMapper {
   }
 
   private static TemplateRequest createRequest(Template template) {
-    if (template instanceof AuthenticationTemplate) return new AuthenticationTemplateRequest();
-    if (template instanceof CarouselTemplate) return new CarouselTemplateRequest();
-    if (template instanceof CatalogTemplate) return new CatalogTemplateRequest();
-    if (template instanceof DocumentTemplate) return new DocumentTemplateRequest();
-    if (template instanceof GIFTemplate) return new GIFTemplateRequest();
-    if (template instanceof ImageTemplate) return new ImageTemplateRequest();
-    if (template instanceof LocationTemplate) return new LocationTemplateRequest();
-    if (template instanceof ProductTemplate) return new ProductTemplateRequest();
-    if (template instanceof TextTemplate) return new TextTemplateRequest();
-    if (template instanceof VideoTemplate) return new VideoTemplateRequest();
+    if (template instanceof AuthenticationTemplate) {
+      return new AuthenticationTemplateRequest();
+    }
+    if (template instanceof CarouselTemplate) {
+      return new CarouselTemplateRequest();
+    }
+    if (template instanceof CatalogTemplate) {
+      return new CatalogTemplateRequest();
+    }
+    if (template instanceof DocumentTemplate) {
+      return new DocumentTemplateRequest();
+    }
+    if (template instanceof GIFTemplate) {
+      return new GIFTemplateRequest();
+    }
+    if (template instanceof ImageTemplate) {
+      return new ImageTemplateRequest();
+    }
+    if (template instanceof LocationTemplate) {
+      return new LocationTemplateRequest();
+    }
+    if (template instanceof ProductTemplate) {
+      return new ProductTemplateRequest();
+    }
+    if (template instanceof TextTemplate) {
+      return new TextTemplateRequest();
+    }
+    if (template instanceof VideoTemplate) {
+      return new VideoTemplateRequest();
+    }
     return new TemplateRequest();
   }
 
