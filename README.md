@@ -1,9 +1,9 @@
 # Gupshup WhatsApp Template Client
 
-[![Build Status](https://github.com/mrcloss/gupshup-template-client/actions/workflows/ci.yml/badge.svg)](https://github.com/mrcloss/gupshup-template-client/actions/workflows/ci.yml)
-[![Publish Status](https://github.com/mrcloss/gupshup-template-client/actions/workflows/publish.yml/badge.svg)](https://github.com/mrcloss/gupshup-template-client/actions/workflows/publish.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.mrcloss/gupshup-template-client.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.mrcloss/gupshup-template-client)
-[![License](https://img.shields.io/github/license/mrcloss/gupshup-template-client)](LICENSE)
+[![Build Status](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/ci.yml/badge.svg)](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/ci.yml)
+[![Publish Status](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/publish.yml/badge.svg)](https://github.com/mrcl-oss/gupshup-template-client/actions/workflows/publish.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.mrcl-oss/gupshup-template-client.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.mrcl-oss/gupshup-template-client)
+[![License](https://img.shields.io/github/license/mrcl-oss/gupshup-template-client)](LICENSE)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-blue)](https://www.oracle.com/java/technologies/downloads/)
 
 A modern, robust, and type-safe Java client for managing and sending **Gupshup WhatsApp Templates**. Designed following Domain-Driven Design (DDD) principles with built-in validation, synchronous and asynchronous communication, and modern Java features.
@@ -30,7 +30,7 @@ Add the following dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>io.github.mrcloss</groupId>
+    <groupId>io.github.mrcl-oss</groupId>
     <artifactId>gupshup-template-client</artifactId>
     <version>1.0.0</version>
 </dependency>

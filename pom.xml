@@ -4,14 +4,19 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.mrcloss</groupId>
+    <groupId>io.github.mrcl-oss</groupId>
     <artifactId>gupshup-template-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Gupshup Template Client</name>
     <description>A robust and scalable Java client for managing Gupshup WhatsApp Templates</description>
-    <url>https://github.com/mrcloss/gupshup-template-client</url>
+    <url>https://github.com/mrcl-oss/gupshup-template-client</url>
+
+    <organization>
+        <name>mrcl-oss</name>
+        <url>https://github.com/mrcl-oss</url>
+    </organization>
 
     <licenses>
         <license>
@@ -30,14 +35,14 @@
         <developer>
             <id>maxlelyonais</id>
             <name>Hao Xu</name>
-            <email>m.llobera@outlook.com</email>
+            <email>haoxuactivo@gmail.com</email>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/mrcloss/gupshup-template-client.git</connection>
-        <developerConnection>scm:git:ssh://github.com:mrcloss/gupshup-template-client.git</developerConnection>
-        <url>https://github.com/mrcloss/gupshup-template-client/tree/main</url>
+        <connection>scm:git:git://github.com/mrcl-oss/gupshup-template-client.git</connection>
+        <developerConnection>scm:git:ssh://github.com:mrcl-oss/gupshup-template-client.git</developerConnection>
+        <url>https://github.com/mrcl-oss/gupshup-template-client/tree/main</url>
     </scm>
 
     <properties>

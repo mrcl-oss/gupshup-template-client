@@ -16,16 +16,16 @@ public interface GupshupClient {
   /**
    * Retrieves all templates from Gupshup.
    *
-   * @param template
-   * @return
+   * @param queryParams the query parameters for filtering and pagination
+   * @return the response containing the list of templates
    */
   GetTemplatesResponse getTemplates(QueryParams queryParams);
 
   /**
-   * Retrieve
+   * Retrieves a single template by its ID.
    *
-   * @param template
-   * @return
+   * @param templateId the unique ID of the template
+   * @return the response containing the template details
    */
   GetTemplateResponse getTemplate(String templateId);
 
@@ -64,12 +64,8 @@ public interface GupshupClient {
   /**
    * Sends a template message via Gupshup.
    *
-   * @param source The registered WhatsApp Business API phone number.
-   * @param destination The user's phone number.
-   * @param templateId The ID of the template to send.
-   * @param parameters The ordered list of variables for the template placeholders.
-   * @param mediaMessage The media object representation (null if text-only).
-   * @return The response from Gupshup.
+   * @param request the request payload containing the message details
+   * @return the response from Gupshup.
    */
   SendTemplateResponse sendTemplate(SendTemplateRequest request);
 

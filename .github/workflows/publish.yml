@@ -30,7 +30,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           # ID of the target server defined in pom.xml and generated settings.xml
-          server-id: ossrh
+          server-id: central
           # Environment variables mapped to maven credentials
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
