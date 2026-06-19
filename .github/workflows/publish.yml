@@ -103,6 +103,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'release'
         with:
+          tag_name: ${{ github.event.release.tag_name }}
           files: |
             target/*.jar
 
