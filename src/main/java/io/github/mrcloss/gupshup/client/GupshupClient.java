@@ -53,6 +53,13 @@ public interface GupshupClient {
   GetTemplatesResponse getTemplates(QueryParams queryParams);
 
   /**
+   * Retrieves all templates from Gupshup.
+   *
+   * @return the response containing the list of templates
+   */
+  GetTemplatesResponse getTemplates();
+
+  /**
    * Retrieves a single template by its ID.
    *
    * @param templateId the unique ID of the template

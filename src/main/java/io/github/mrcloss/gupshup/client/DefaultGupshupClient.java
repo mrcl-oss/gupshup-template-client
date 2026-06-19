@@ -52,6 +52,11 @@ public class DefaultGupshupClient implements GupshupClient {
   }
 
   @Override
+  public GetTemplatesResponse getTemplates() {
+    return httpService.getWithParams(templateUrl, null, GetTemplatesResponse.class);
+  }
+
+  @Override
   public GetTemplateResponse getTemplate(String templateId) {
     return httpService.getWithParams(
         templateUrl + "/" + templateId, null, GetTemplateResponse.class);
