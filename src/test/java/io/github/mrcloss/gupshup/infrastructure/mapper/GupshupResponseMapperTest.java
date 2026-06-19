@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.mrcloss.gupshup.domain.button.*;
 import io.github.mrcloss.gupshup.domain.enums.*;
 import io.github.mrcloss.gupshup.domain.template.*;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplate;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +25,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapFallbackPlainBodyText() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setAppId("app-123");
     gt.setElementName("hello_template");
     gt.setTemplateType("TEXT");
@@ -47,7 +47,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapTextTemplateWithJsonData() throws Exception {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setAppId("app-123");
     gt.setElementName("order_confirmed");
     gt.setTemplateType("TEXT");
@@ -102,7 +102,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapImageTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setAppId("app-123");
     gt.setElementName("image_promo");
     gt.setTemplateType("IMAGE");
@@ -131,7 +131,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapVideoTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("VIDEO");
     gt.setData("{\"body\":\"Watch this video.\",\"mediaUrl\":\"https://example.com/video.mp4\"}");
 
@@ -145,7 +145,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapDocumentTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("DOCUMENT");
     gt.setData("{\"body\":\"Read this doc.\",\"mediaUrl\":\"https://example.com/doc.pdf\"}");
 
@@ -159,7 +159,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapGIFTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("GIF");
     gt.setData("{\"body\":\"Funny GIF.\",\"mediaUrl\":\"https://example.com/gif.gif\"}");
 
@@ -173,7 +173,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapLocationTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("LOCATION");
     gt.setData("{\"body\":\"Come visit us!\"}");
 
@@ -185,7 +185,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapCatalogTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("CATALOG");
     gt.setData("{\"body\":\"Check out our catalog!\"}");
 
@@ -199,7 +199,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapProductTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("PRODUCT");
     gt.setData("{\"body\":\"Buy our items!\"}");
 
@@ -213,7 +213,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapAuthenticationTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("TEXT");
     gt.setCategory("AUTHENTICATION");
     gt.setData(
@@ -238,7 +238,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapAuthenticationTemplateFromButtonTextFallback() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("TEXT");
     gt.setCategory("AUTHENTICATION");
     gt.setData(
@@ -254,7 +254,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapCarouselTemplate() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("CAROUSEL");
     gt.setCategory("MARKETING");
 
@@ -299,7 +299,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapButtonsAllTypes() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("TEXT");
 
     String jsonData =
@@ -340,7 +340,7 @@ class GupshupResponseMapperTest {
 
   @Test
   void testMapLtoAttributes() {
-    GupshupTemplate gt = new GupshupTemplate();
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("TEXT");
     gt.setData(
         "{\"body\":\"Hurry up!\",\"isLTO\":true,\"hasExpiration\":true,\"limitedOfferText\":\"Offer"

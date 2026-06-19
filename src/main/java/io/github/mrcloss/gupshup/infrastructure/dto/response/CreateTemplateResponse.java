@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateTemplateResponse extends BaseGupshupResponse {
-  private GupshupTemplate template;
+  private GupshupTemplateDetails template;
 }

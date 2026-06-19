@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GetTemplatesResponse extends BaseGupshupResponse {
-  List<GupshupTemplate> templates;
+  List<GupshupTemplateDetails> templates;
 }

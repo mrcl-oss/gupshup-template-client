@@ -1,4 +1,4 @@
-package io.github.mrcloss.gupshup.infrastructure.https;
+package io.github.mrcloss.gupshup.infrastructure.http;
 
 import io.github.mrcloss.gupshup.infrastructure.dto.response.BaseGupshupResponse;
 import java.util.Map;

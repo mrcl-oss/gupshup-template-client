@@ -3,7 +3,7 @@ package io.github.mrcloss.gupshup.example;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.mrcloss.gupshup.client.GupshupClient;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplate;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
 
 public class GetTemplateExample {
 
@@ -29,10 +29,10 @@ public class GetTemplateExample {
 
       System.out.println("Status: " + response.getStatus());
 
-      GupshupTemplate template = response.getTemplate();
+      GupshupTemplateDetails template = response.getTemplate();
       // if (templates != null) {
       // System.out.println("Templates:");
-      // for (GupshupTemplate template : templates) {
+      // for (GupshupTemplateDetails template : templates) {
       // System.out.println("Template: " + template.getId());
       // }
       // }

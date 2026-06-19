@@ -10,8 +10,8 @@ import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
 import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateResponse;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplate;
-import io.github.mrcloss.gupshup.infrastructure.https.GupshupHttpService;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
+import io.github.mrcloss.gupshup.infrastructure.http.GupshupHttpService;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,7 @@ class GupshupClientTest {
 
     CreateTemplateResponse expectedResponse = new CreateTemplateResponse();
     expectedResponse.setStatus("success");
-    GupshupTemplate gupshupTemplate = new GupshupTemplate();
+    GupshupTemplateDetails gupshupTemplate = new GupshupTemplateDetails();
     gupshupTemplate.setId("test-id");
     gupshupTemplate.setElementName("test_element");
     expectedResponse.setTemplate(gupshupTemplate);

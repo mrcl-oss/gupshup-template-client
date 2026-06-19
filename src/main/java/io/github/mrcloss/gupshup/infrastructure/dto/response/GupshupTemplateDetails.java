@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GupshupTemplate {
+public class GupshupTemplateDetails {
   private String id;
   private String appId;
   private String elementName;

@@ -1,4 +1,4 @@
-package io.github.mrcloss.gupshup.infrastructure.https;
+package io.github.mrcloss.gupshup.infrastructure.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mrcloss.gupshup.exception.GupshupApiException;

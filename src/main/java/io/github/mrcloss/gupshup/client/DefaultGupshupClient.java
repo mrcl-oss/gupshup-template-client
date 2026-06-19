@@ -12,8 +12,8 @@ import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateRespo
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
-import io.github.mrcloss.gupshup.infrastructure.https.GupshupHttpService;
-import io.github.mrcloss.gupshup.infrastructure.https.JdkGupshupHttpService;
+import io.github.mrcloss.gupshup.infrastructure.http.GupshupHttpService;
+import io.github.mrcloss.gupshup.infrastructure.http.JdkGupshupHttpService;
 import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupRequestMapper;
 import java.net.http.HttpClient;
 import java.util.Map;

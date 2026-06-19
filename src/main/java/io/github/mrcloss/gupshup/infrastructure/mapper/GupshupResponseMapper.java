@@ -34,7 +34,7 @@ import io.github.mrcloss.gupshup.domain.template.ProductTemplate;
 import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import io.github.mrcloss.gupshup.domain.template.VideoTemplate;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplate;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Mapper for converting infrastructure response DTO {@link GupshupTemplate} into domain {@link
- * Template} subclasses.
+ * Mapper for converting infrastructure response DTO {@link GupshupTemplateDetails} into domain
+ * {@link Template} subclasses.
  */
 public class GupshupResponseMapper {
 
@@ -51,25 +51,25 @@ public class GupshupResponseMapper {
       new ObjectMapper().registerModule(new JavaTimeModule());
 
   /**
-   * Maps a {@link GupshupTemplate} response into a domain {@link Template} object using a default
-   * ObjectMapper.
+   * Maps a {@link GupshupTemplateDetails} response into a domain {@link Template} object using a
+   * default ObjectMapper.
    *
    * @param response the Gupshup template response DTO
    * @return the mapped domain template
    */
-  public static Template map(GupshupTemplate response) {
+  public static Template map(GupshupTemplateDetails response) {
     return map(response, DEFAULT_OBJECT_MAPPER);
   }
 
   /**
-   * Maps a {@link GupshupTemplate} response into a domain {@link Template} object using a custom
-   * ObjectMapper.
+   * Maps a {@link GupshupTemplateDetails} response into a domain {@link Template} object using a
+   * custom ObjectMapper.
    *
    * @param response the Gupshup template response DTO
    * @param customObjectMapper the Jackson ObjectMapper to deserialize JSON fields
    * @return the mapped domain template
    */
-  public static Template map(GupshupTemplate response, ObjectMapper customObjectMapper) {
+  public static Template map(GupshupTemplateDetails response, ObjectMapper customObjectMapper) {
     if (response == null) {
       return null;
     }
