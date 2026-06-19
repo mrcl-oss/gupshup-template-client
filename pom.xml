@@ -141,10 +141,10 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>spotless-apply</id>
+                        <id>validate</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>apply</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
