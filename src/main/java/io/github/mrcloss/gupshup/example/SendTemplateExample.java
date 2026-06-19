@@ -24,7 +24,8 @@ public class SendTemplateExample {
 
     List<String> params = new ArrayList<>();
 
-    // CarouselPayload carouselPayload = new CarouselPayload(CarouselPayload.CardHeaderType.IMAGE,
+    // CarouselPayload carouselPayload = new
+    // CarouselPayload(CarouselPayload.CardHeaderType.IMAGE,
     // List.of(
     // "https://fss.gupshup.io/0/public/0/0/gupshup/34977900141/ceb85f9b-dd26-4ba5-b16a-a9eb883dba52/1745503565625_ceb85f9b-dd26-4ba5-b16a-a9eb883dba52.png",
     // "https://fss.gupshup.io/0/public/0/0/gupshup/34977900141/edea0ce9-f495-4d2a-a78a-baf1bc2feb00/1745503565946_edea0ce9-f495-4d2a-a78a-baf1bc2feb00.png")

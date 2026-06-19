@@ -141,11 +141,10 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <?m2e execute onConfiguration?>
-                        <id>validate</id>
+                        <id>spotless-apply</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>check</goal>
+                            <goal>apply</goal>
                         </goals>
                     </execution>
                 </executions>

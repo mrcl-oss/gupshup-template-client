@@ -20,7 +20,8 @@ public class GetTemplateExample {
 
     GupshupClient client = GupshupClient.builder().appId(appId).apiKey(apiKey).build();
 
-    // QueryParams queryParams = new QueryParams(0, 10, null, null, null, null, null);
+    // QueryParams queryParams = new QueryParams(0, 10, null, null, null, null,
+    // null);
 
     try {
       System.out.println("Get template...");
@@ -30,10 +31,10 @@ public class GetTemplateExample {
 
       GupshupTemplate template = response.getTemplate();
       // if (templates != null) {
-      //     System.out.println("Templates:");
-      //     for (GupshupTemplate template : templates) {
-      //         System.out.println("Template: " + template.getId());
-      //     }
+      // System.out.println("Templates:");
+      // for (GupshupTemplate template : templates) {
+      // System.out.println("Template: " + template.getId());
+      // }
       // }
 
       System.out.println(template.getCategory());
