@@ -7,6 +7,7 @@ import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateRespo
 import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesResponse;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.OptInResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
 import java.util.concurrent.CompletableFuture;
 
@@ -107,6 +108,24 @@ public interface GupshupClient {
    * @return the response containing the message ID
    */
   SendTemplateResponse sendTemplate(SendTemplateRequest request);
+
+  /**
+   * Marks a user as opted-in to receive WhatsApp messages.
+   *
+   * @param appName the registered Gupshup app name
+   * @param phoneNumber the user's phone number
+   * @return the response indicating success or failure of the opt-in
+   */
+  OptInResponse optIn(String appName, String phoneNumber);
+
+  /**
+   * Asynchronously marks a user as opted-in to receive WhatsApp messages.
+   *
+   * @param appName the registered Gupshup app name
+   * @param phoneNumber the user's phone number
+   * @return a CompletableFuture containing the response indicating success or failure
+   */
+  CompletableFuture<OptInResponse> optInAsync(String appName, String phoneNumber);
 
   /**
    * Creates a new builder for configuring and instantiating a GupshupClient.
