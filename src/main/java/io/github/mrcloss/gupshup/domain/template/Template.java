@@ -304,4 +304,14 @@ public class Template {
       }
     }
   }
+
+  /**
+   * Checks if this template requires attaching a media file (either directly or via its
+   * components).
+   *
+   * @return true if the template requires media, false otherwise
+   */
+  public boolean isMediaRequired() {
+    return templateType != null && templateType.isMediaRequired();
+  }
 }

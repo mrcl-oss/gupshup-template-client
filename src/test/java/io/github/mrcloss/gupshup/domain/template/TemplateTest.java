@@ -1,6 +1,8 @@
 package io.github.mrcloss.gupshup.domain.template;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.mrcloss.gupshup.domain.button.PhoneNumberButton;
 import io.github.mrcloss.gupshup.domain.button.StaticUrlButton;
@@ -185,5 +187,35 @@ public class TemplateTest {
 
     template.setBody("Hello {{1}} and {{2}}!");
     template.validate(); // Should pass
+  }
+
+  @Test
+  public void shouldIdentifyIfMediaIsRequired() {
+    Template textTemplate = createBaseTemplate();
+    assertFalse(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.IMAGE);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.VIDEO);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.DOCUMENT);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.GIF);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.CAROUSEL);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.LOCATION);
+    assertFalse(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.CATALOG);
+    assertFalse(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.PRODUCT);
+    assertFalse(textTemplate.isMediaRequired());
   }
 }
