@@ -314,4 +314,37 @@ public class Template {
   public boolean isMediaRequired() {
     return templateType != null && templateType.isMediaRequired();
   }
+
+  /**
+   * Returns the template body with the example variables filled.
+   *
+   * @return the body with example variables replaced, or the raw body if no variables/examples
+   *     exist
+   */
+  public String getFilledBody() {
+    return fillVariables(this.body, this.variableExamples);
+  }
+
+  /**
+   * Returns the template body with the provided custom variables filled.
+   *
+   * @param variables the list of custom variable values
+   * @return the body with custom variables replaced, or the raw body if the list is empty/null
+   */
+  public String getFilledBody(List<String> variables) {
+    return fillVariables(this.body, variables);
+  }
+
+  static String fillVariables(String text, List<String> variables) {
+    if (text == null || variables == null || variables.isEmpty()) {
+      return text;
+    }
+    String result = text;
+    for (int i = 0; i < variables.size(); i++) {
+      String placeholder = "{{" + (i + 1) + "}}";
+      String value = variables.get(i) != null ? variables.get(i) : "";
+      result = result.replace(placeholder, value);
+    }
+    return result;
+  }
 }

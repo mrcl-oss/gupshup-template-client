@@ -203,4 +203,24 @@ public class TextTemplate extends Template {
       }
     }
   }
+
+  /**
+   * Returns the template header with the example header variables filled.
+   *
+   * @return the header with example variables replaced, or the raw header if no header/examples
+   *     exist
+   */
+  public String getFilledHeader() {
+    return fillVariables(this.header, this.variableHeaderExamples);
+  }
+
+  /**
+   * Returns the template header with the provided custom variables filled.
+   *
+   * @param variables the list of custom variable values
+   * @return the header with custom variables replaced, or the raw header if the list is empty/null
+   */
+  public String getFilledHeader(List<String> variables) {
+    return fillVariables(this.header, variables);
+  }
 }
