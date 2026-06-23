@@ -111,4 +111,19 @@ public class MediaValidationTest {
         },
         "Media URL must be a valid URL");
   }
+
+  @Test
+  public void imageTemplateShouldAllowPercentEncodedUrl() {
+    ImageTemplate template =
+        new ImageTemplate(
+            "test_media",
+            LanguageCode.ENGLISH,
+            "Media body",
+            TemplateCategory.MARKETING,
+            "app-123",
+            null,
+            TemplateParameterFormat.POSITIONAL);
+    template.setMediaUrl(
+        "https://fss.gupshup.io/0/public/bc224495/1782197704193_Captura%20desde%202026-02-04%2009-50-05.png");
+  }
 }

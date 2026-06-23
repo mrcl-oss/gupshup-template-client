@@ -23,6 +23,8 @@ public abstract class MediaTemplate extends Template {
   @Setter(AccessLevel.NONE)
   private String mediaUrl;
 
+  private java.io.File mediaFile;
+
   /**
    * Constructs a new MediaTemplate without variable examples.
    *
@@ -100,7 +102,7 @@ public abstract class MediaTemplate extends Template {
 
       // Strict URL format check (simplified for this context but ensuring it looks like a URL with
       // a path)
-      if (!mediaUrl.matches("^https?://[\\w\\.-]+(?:\\.[\\w\\.-]+)+[/\\w\\.-]*/?$")) {
+      if (!mediaUrl.matches("^https?://[\\w\\.-]+(?:\\.[\\w\\.-]+)+[/\\w\\.%~+-]*/?$")) {
         throw new IllegalArgumentException("Invalid Media URL format");
       }
 

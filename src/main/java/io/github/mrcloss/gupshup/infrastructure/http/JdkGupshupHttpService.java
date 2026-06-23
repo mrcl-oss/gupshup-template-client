@@ -118,6 +118,99 @@ public class JdkGupshupHttpService implements GupshupHttpService {
     }
   }
 
+  @Override
+  public <T extends BaseGupshupResponse> T uploadMedia(
+      String path, java.io.File file, Class<T> responseType) {
+    try {
+      String boundary = "GupshupBoundary" + System.currentTimeMillis();
+      String mimeType = java.nio.file.Files.probeContentType(file.toPath());
+      if (mimeType == null) {
+        mimeType = "application/octet-stream";
+      }
+
+      byte[] boundaryBytes = ("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] dispositionBytes =
+          ("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n")
+              .getBytes(StandardCharsets.UTF_8);
+      byte[] contentTypeBytes =
+          ("Content-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] fileBytes = java.nio.file.Files.readAllBytes(file.toPath());
+      byte[] newlineBytes = "\r\n".getBytes(StandardCharsets.UTF_8);
+      byte[] endBoundaryBytes = ("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
+
+      HttpRequest.BodyPublisher bodyPublisher =
+          HttpRequest.BodyPublishers.ofByteArrays(
+              java.util.List.of(
+                  boundaryBytes,
+                  dispositionBytes,
+                  contentTypeBytes,
+                  fileBytes,
+                  newlineBytes,
+                  endBoundaryBytes));
+
+      HttpRequest request =
+          buildBaseRequest(path)
+              .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+              .POST(bodyPublisher)
+              .build();
+
+      HttpResponse<String> response =
+          httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+      return handleResponse(response, responseType);
+    } catch (GupshupApiException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new GupshupApiException(
+          "Failed to execute upload media request: " + e.getMessage(), 0, null);
+    }
+  }
+
+  @Override
+  public <T extends BaseGupshupResponse> CompletableFuture<T> uploadMediaAsync(
+      String path, java.io.File file, Class<T> responseType) {
+    try {
+      String boundary = "GupshupBoundary" + System.currentTimeMillis();
+      String mimeType = java.nio.file.Files.probeContentType(file.toPath());
+      if (mimeType == null) {
+        mimeType = "application/octet-stream";
+      }
+
+      byte[] boundaryBytes = ("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] dispositionBytes =
+          ("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n")
+              .getBytes(StandardCharsets.UTF_8);
+      byte[] contentTypeBytes =
+          ("Content-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] fileBytes = java.nio.file.Files.readAllBytes(file.toPath());
+      byte[] newlineBytes = "\r\n".getBytes(StandardCharsets.UTF_8);
+      byte[] endBoundaryBytes = ("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
+
+      HttpRequest.BodyPublisher bodyPublisher =
+          HttpRequest.BodyPublishers.ofByteArrays(
+              java.util.List.of(
+                  boundaryBytes,
+                  dispositionBytes,
+                  contentTypeBytes,
+                  fileBytes,
+                  newlineBytes,
+                  endBoundaryBytes));
+
+      HttpRequest request =
+          buildBaseRequest(path)
+              .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+              .POST(bodyPublisher)
+              .build();
+
+      return httpClient
+          .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+          .thenApply(response -> handleResponse(response, responseType));
+    } catch (Exception e) {
+      return CompletableFuture.failedFuture(
+          new GupshupApiException(
+              "Failed to start async upload media request: " + e.getMessage(), 0, null));
+    }
+  }
+
   private HttpRequest.Builder buildBaseRequest(String path) {
     return HttpRequest.newBuilder()
         .uri(URI.create(path))
