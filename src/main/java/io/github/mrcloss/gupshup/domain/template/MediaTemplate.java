@@ -7,7 +7,9 @@ import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Abstract base class for WhatsApp media templates.
@@ -17,6 +19,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public abstract class MediaTemplate extends Template {
   private String mediaId;
 

@@ -9,7 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a specialized WhatsApp template for sending One-Time Passwords (OTPs) or verification
@@ -21,6 +23,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class AuthenticationTemplate extends TextTemplate {
   @Setter(AccessLevel.NONE)
   private boolean addSecurityRecommendation;

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /** Represents the Multi-Product Message (MPM) payload used inside the template parameter. */
 @Getter
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Mpm {
 
@@ -26,6 +28,7 @@ public class Mpm {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
+  @ToString
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Section {
     private String title;
@@ -38,6 +41,7 @@ public class Mpm {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
+  @ToString
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Product {
     @JsonProperty("product_retailer_id")

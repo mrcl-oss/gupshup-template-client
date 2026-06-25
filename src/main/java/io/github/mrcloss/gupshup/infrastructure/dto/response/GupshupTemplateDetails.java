@@ -3,10 +3,12 @@ package io.github.mrcloss.gupshup.infrastructure.dto.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /** Detailed information of a Gupshup WhatsApp template returned by the API. */
 @Getter
 @Setter
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GupshupTemplateDetails {
   private String id;

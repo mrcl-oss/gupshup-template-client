@@ -1,15 +1,24 @@
 package io.github.mrcloss.gupshup.infrastructure.dto.client;
 
+import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class TextTemplateDto extends BaseTemplateDto {
+
+  /**
+   * Default constructor. Explicitly sets the template type to maintain consistency during
+   * programmatic instantiation.
+   */
+  public TextTemplateDto() {
+    super();
+    this.setTemplateType(TemplateType.TEXT);
+  }
+
   private String header;
   private List<String> variableHeaderExamples;
 

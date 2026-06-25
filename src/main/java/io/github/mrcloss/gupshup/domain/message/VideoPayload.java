@@ -2,9 +2,11 @@ package io.github.mrcloss.gupshup.domain.message;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class VideoPayload extends GupshupMessage {
   private final VideoWrapper video;
 
@@ -15,6 +17,7 @@ public class VideoPayload extends GupshupMessage {
   }
 
   @Getter
+  @ToString
   public static class VideoWrapper {
     private final String link;
     private final String id;

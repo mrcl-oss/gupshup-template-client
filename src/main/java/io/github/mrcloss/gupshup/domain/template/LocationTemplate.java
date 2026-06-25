@@ -6,10 +6,14 @@ import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
 import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class LocationTemplate extends Template {
   public LocationTemplate(
       String elementName,

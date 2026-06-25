@@ -10,7 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a text-only WhatsApp template.
@@ -20,6 +22,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class TextTemplate extends Template {
   @Setter(AccessLevel.NONE)
   private String header;

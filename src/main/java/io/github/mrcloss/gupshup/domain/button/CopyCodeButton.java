@@ -4,9 +4,11 @@ import io.github.mrcloss.gupshup.domain.enums.ButtonType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class CopyCodeButton extends Button {
   @Setter(AccessLevel.NONE)
   private String exampleValue;

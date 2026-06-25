@@ -7,9 +7,11 @@ import io.github.mrcloss.gupshup.domain.button.UrlButton;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CarouselCard {
 
   public enum CarouselCardHeaderType {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.ToString;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
   @JsonSubTypes.Type(value = TextPayload.class, name = "text"),
   @JsonSubTypes.Type(value = VideoPayload.class, name = "gif")
 })
+@ToString
 public abstract class GupshupMessage {
 
   @JsonIgnore private final MessageType messageType;

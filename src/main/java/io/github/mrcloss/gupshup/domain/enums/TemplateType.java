@@ -29,7 +29,10 @@ public enum TemplateType {
   PRODUCT,
 
   @JsonProperty("CAROUSEL")
-  CAROUSEL;
+  CAROUSEL,
+
+  @JsonProperty("AUTHENTICATION")
+  AUTHENTICATION;
 
   /**
    * Checks if this template type requires attaching a media file (either directly or via its

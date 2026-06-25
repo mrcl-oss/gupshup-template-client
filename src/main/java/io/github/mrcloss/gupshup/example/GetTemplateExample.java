@@ -25,9 +25,9 @@ public class GetTemplateExample {
 
     try {
       System.out.println("Get template...");
-      GetTemplateResponse response = client.getTemplate("1c9c1def-96d2-4bb1-b095-e2608627e242");
+      GetTemplateResponse response = client.getTemplate("dca4b081-4c58-4d2d-a458-a06c0b7beba0");
 
-      System.out.println("Status: " + response.getStatus());
+      System.out.println("Template: " + response.getTemplate().toString());
 
       GupshupTemplateDetails template = response.getTemplate();
       // if (templates != null) {
@@ -37,7 +37,7 @@ public class GetTemplateExample {
       // }
       // }
 
-      System.out.println(template.getCategory());
+      //   System.out.println(template.getCategory());
     } catch (io.github.mrcloss.gupshup.exception.GupshupApiException e) {
       System.err.println("Gupshup API Error: " + e.getMessage());
       System.err.println("Status Code: " + e.getStatusCode());

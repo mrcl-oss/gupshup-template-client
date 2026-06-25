@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class LocationPayload extends GupshupMessage {
   private final LocationWrapper location;
 
@@ -70,6 +72,7 @@ public class LocationPayload extends GupshupMessage {
   }
 
   @Getter
+  @ToString
   public static class LocationWrapper {
     private final double latitude;
     private final double longitude;
@@ -85,6 +88,7 @@ public class LocationPayload extends GupshupMessage {
   }
 
   @Getter
+  @ToString
   public static class PostBackTexts {
 
     private final int index;

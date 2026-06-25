@@ -3,9 +3,11 @@ package io.github.mrcloss.gupshup.domain.button;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class StaticUrlButton extends UrlButton {
   @Setter(AccessLevel.NONE)
   private String url;
