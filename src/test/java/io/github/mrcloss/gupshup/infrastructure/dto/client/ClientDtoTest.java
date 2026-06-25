@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.mrcloss.gupshup.domain.button.Button;
+import io.github.mrcloss.gupshup.domain.button.StaticUrlButton;
 import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
 import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
 import io.github.mrcloss.gupshup.domain.enums.TemplateType;
@@ -75,5 +77,68 @@ public class ClientDtoTest {
     assertEquals("promo_img", domain.getElementName());
     assertEquals("https://example.com/promo.png", domain.getMediaUrl());
     assertEquals(TemplateType.IMAGE, domain.getTemplateType());
+  }
+
+  @Test
+  public void testAuthenticationTemplateDtoPolymorphismAndMapping() throws Exception {
+    String json =
+        "{"
+            + "\"templateType\":\"AUTHENTICATION\","
+            + "\"elementName\":\"auth_otp\","
+            + "\"languageCode\":\"EN\","
+            + "\"body\":\"Your verification code is {{1}}.\","
+            + "\"category\":\"AUTHENTICATION\","
+            + "\"addSecurityRecommendation\":true,"
+            + "\"codeExpirationMinutes\":10"
+            + "}";
+
+    BaseTemplateDto dto = objectMapper.readValue(json, BaseTemplateDto.class);
+
+    assertNotNull(dto);
+    assertInstanceOf(AuthenticationTemplateDto.class, dto);
+    AuthenticationTemplateDto authDto = (AuthenticationTemplateDto) dto;
+    assertEquals("auth_otp", authDto.getElementName());
+    assertEquals(true, authDto.isAddSecurityRecommendation());
+    assertEquals(10, authDto.getCodeExpirationMinutes());
+
+    // Map to domain template
+    var domain = authDto.toDomain();
+    assertNotNull(domain);
+    assertEquals("auth_otp", domain.getElementName());
+    assertEquals(TemplateType.TEXT, domain.getTemplateType());
+  }
+
+  @Test
+  public void testCatalogTemplateDtoWithButtonsDeserialization() throws Exception {
+    String json =
+        "{"
+            + "\"templateType\":\"CATALOG\","
+            + "\"elementName\":\"my_catalog\","
+            + "\"languageCode\":\"EN\","
+            + "\"body\":\"Here is our catalog\","
+            + "\"category\":\"UTILITY\","
+            + "\"buttons\":["
+            + "  {\"type\":\"URL\",\"text\":\"Visit Shop\",\"url\":\"https://example.com/shop\"},"
+            + "  {\"type\":\"QUICK_REPLY\",\"text\":\"Help\"}"
+            + "]"
+            + "}";
+
+    BaseTemplateDto dto = objectMapper.readValue(json, BaseTemplateDto.class);
+
+    assertNotNull(dto);
+    assertInstanceOf(CatalogTemplateDto.class, dto);
+    CatalogTemplateDto catalogDto = (CatalogTemplateDto) dto;
+    assertEquals("my_catalog", catalogDto.getElementName());
+    assertNotNull(catalogDto.getButtons());
+    assertEquals(2, catalogDto.getButtons().size());
+
+    Button button1 = catalogDto.getButtons().get(0);
+    assertInstanceOf(StaticUrlButton.class, button1);
+    assertEquals("Visit Shop", button1.getText());
+    assertEquals("https://example.com/shop", ((StaticUrlButton) button1).getUrl());
+
+    Button button2 = catalogDto.getButtons().get(1);
+    assertInstanceOf(io.github.mrcloss.gupshup.domain.button.QuickReplyButton.class, button2);
+    assertEquals("Help", button2.getText());
   }
 }
