@@ -6,8 +6,11 @@ import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
 import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
 import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
 import io.github.mrcloss.gupshup.domain.template.ImageTemplate;
+import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
+import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupResponseMapper;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -43,9 +46,10 @@ public class CreateMediaTemplateExample {
     // Create an ImageTemplate and attach the file
     ImageTemplate template =
         new ImageTemplate(
-            "media_image_template_example", // elementName
+            "test_text_template_x", // elementName
             LanguageCode.SPANISH_ES, // languageCode
-            "Hola! Te enviamos esta imagen de prueba.", // body
+            "Esto es un test para un template de texto y eso {{1}} es una variable.", // body
+            Arrays.asList("Hola"),
             TemplateCategory.MARKETING, // category
             appId, // appId
             Collections.singletonList("MEDIA"), // tags
@@ -60,9 +64,9 @@ public class CreateMediaTemplateExample {
 
       System.out.println("Status: " + response.getStatus());
       if (response.getTemplate() != null) {
-        System.out.println("Template ID: " + response.getTemplate().getId());
-        System.out.println("Uploaded Media ID: " + template.getMediaId());
-        System.out.println("Uploaded Media URL: " + template.getMediaUrl());
+        System.out.println("Gupshup Response: " + response.getTemplate().toString());
+        Template templatex = GupshupResponseMapper.map(response.getTemplate());
+        System.out.println("Template: " + templatex.toString());
       }
       if (response.getError() != null) {
         System.out.println("Error: " + response.getError());

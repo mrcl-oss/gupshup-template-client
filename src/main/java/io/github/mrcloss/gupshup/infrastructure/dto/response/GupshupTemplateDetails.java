@@ -1,6 +1,9 @@
 package io.github.mrcloss.gupshup.infrastructure.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupInstantDeserializer;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,8 +36,13 @@ public class GupshupTemplateDetails {
   private String wabaId;
   private String source;
   private String stage;
-  private Long createdOn;
-  private Long modifiedOn;
+
+  @JsonDeserialize(using = GupshupInstantDeserializer.class)
+  private Instant createdOn;
+
+  @JsonDeserialize(using = GupshupInstantDeserializer.class)
+  private Instant modifiedOn;
+
   private String buttonSupported;
   private Integer priority;
   private Integer retry;

@@ -9,9 +9,10 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarouselCardRequest {
-  private String content;
+  private String body;
   private List<ButtonRequest> buttons;
   private String sampleText;
   private String mediaId;
   private String mediaUrl;
+  private String headerType;
 }

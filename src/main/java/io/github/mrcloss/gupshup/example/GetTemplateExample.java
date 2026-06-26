@@ -2,8 +2,9 @@ package io.github.mrcloss.gupshup.example;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.mrcloss.gupshup.client.GupshupClient;
+import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
+import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupResponseMapper;
 
 public class GetTemplateExample {
 
@@ -25,11 +26,14 @@ public class GetTemplateExample {
 
     try {
       System.out.println("Get template...");
-      GetTemplateResponse response = client.getTemplate("dca4b081-4c58-4d2d-a458-a06c0b7beba0");
+      GetTemplateResponse response = client.getTemplate("5478c78b-42f5-4d54-8797-1e4cef505e6d");
 
-      System.out.println("Template: " + response.getTemplate().toString());
+      System.out.println("ResponseDetails: " + response.getTemplate().toString());
 
-      GupshupTemplateDetails template = response.getTemplate();
+      Template template = GupshupResponseMapper.map(response.getTemplate());
+
+      System.out.println("Template: " + template.toString());
+      //   GupshupTemplateDetails template = response.getTemplate();
       // if (templates != null) {
       // System.out.println("Templates:");
       // for (GupshupTemplateDetails template : templates) {

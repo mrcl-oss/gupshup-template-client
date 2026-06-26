@@ -2,6 +2,7 @@ package io.github.mrcloss.gupshup.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.mrcloss.gupshup.domain.template.CarouselCard;
 import io.github.mrcloss.gupshup.domain.template.CarouselTemplate;
@@ -19,15 +20,21 @@ import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateRespons
 import io.github.mrcloss.gupshup.infrastructure.dto.response.UploadMediaResponse;
 import io.github.mrcloss.gupshup.infrastructure.http.GupshupHttpService;
 import io.github.mrcloss.gupshup.infrastructure.http.JdkGupshupHttpService;
+import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupInstantDeserializer;
 import io.github.mrcloss.gupshup.infrastructure.mapper.GupshupRequestMapper;
 import java.net.http.HttpClient;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import lombok.extern.slf4j.Slf4j;
 
 /** Default implementation of GupshupClient. */
+@Slf4j
 public class DefaultGupshupClient implements GupshupClient {
 
   private final String appId;
@@ -35,11 +42,21 @@ public class DefaultGupshupClient implements GupshupClient {
   private final ObjectMapper objectMapper;
   private final String templateUrl;
   private final String sendTemplateUrl;
+  private final ZoneId zoneId;
 
   private DefaultGupshupClient(Builder builder) {
     this.appId = builder.appId;
+    this.zoneId = builder.zoneId;
     this.objectMapper =
         builder.objectMapper != null ? builder.objectMapper : createDefaultObjectMapper();
+    if (builder.zoneId != null) {
+      this.objectMapper.setTimeZone(java.util.TimeZone.getTimeZone(builder.zoneId));
+    }
+
+    SimpleModule module = new SimpleModule();
+    module.addDeserializer(Instant.class, new GupshupInstantDeserializer(builder.zoneId));
+    this.objectMapper.registerModule(module);
+
     HttpClient httpClient =
         builder.httpClient != null ? builder.httpClient : HttpClient.newHttpClient();
     templateUrl = String.format("https://api.gupshup.io/wa/app/%s/template", builder.appId);
@@ -51,29 +68,38 @@ public class DefaultGupshupClient implements GupshupClient {
             : new JdkGupshupHttpService(builder.apiKey, httpClient, objectMapper);
   }
 
+  @Override
+  public ZoneId getZoneId() {
+    return zoneId;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
 
   @Override
   public GetTemplatesResponse getTemplates(QueryParams queryParams) {
+    log.info("DefaultGupshupClient: getTemplates with params: {}", queryParams);
     Map<String, Object> queryParamsMap = convertToMap(queryParams);
     return httpService.getWithParams(templateUrl, queryParamsMap, GetTemplatesResponse.class);
   }
 
   @Override
   public GetTemplatesResponse getTemplates() {
+    log.info("DefaultGupshupClient: getTemplates (all)");
     return httpService.getWithParams(templateUrl, null, GetTemplatesResponse.class);
   }
 
   @Override
   public GetTemplateResponse getTemplate(String templateId) {
+    log.info("DefaultGupshupClient: getTemplate with id: {}", templateId);
     return httpService.getWithParams(
         templateUrl + "/" + templateId, null, GetTemplateResponse.class);
   }
 
   @Override
   public CreateTemplateResponse createTemplate(Template template) {
+    log.info("DefaultGupshupClient: createTemplate: {}", template.getElementName());
     if (template instanceof MediaTemplate) {
       MediaTemplate mediaTemplate = (MediaTemplate) template;
       if (mediaTemplate.getMediaFile() != null
@@ -132,6 +158,7 @@ public class DefaultGupshupClient implements GupshupClient {
 
   @Override
   public CompletableFuture<CreateTemplateResponse> createTemplateAsync(Template template) {
+    log.info("DefaultGupshupClient: createTemplateAsync: {}", template.getElementName());
     if (template instanceof MediaTemplate) {
       MediaTemplate mediaTemplate = (MediaTemplate) template;
       if (mediaTemplate.getMediaFile() != null
@@ -230,22 +257,26 @@ public class DefaultGupshupClient implements GupshupClient {
 
   @Override
   public DeleteTemplateResponse deleteTemplate(String templateName) {
+    log.info("DefaultGupshupClient: deleteTemplate: {}", templateName);
     return httpService.delete(templateUrl + "/" + templateName, DeleteTemplateResponse.class);
   }
 
   @Override
   public CompletableFuture<DeleteTemplateResponse> deleteTemplateAsync(String templateName) {
+    log.info("DefaultGupshupClient: deleteTemplateAsync: {}", templateName);
     return httpService.deleteAsync(templateUrl + "/" + templateName, DeleteTemplateResponse.class);
   }
 
   @Override
   public SendTemplateResponse sendTemplate(SendTemplateRequest sendTemplate) {
+    log.info("DefaultGupshupClient: sendTemplate request: {}", sendTemplate);
     Map<String, Object> body = convertToMap(sendTemplate);
     return httpService.postForm(sendTemplateUrl, body, SendTemplateResponse.class);
   }
 
   @Override
   public OptInResponse optIn(String appName, String phoneNumber) {
+    log.info("DefaultGupshupClient: optIn app: {} user: {}", appName, phoneNumber);
     if (appName == null || appName.trim().isEmpty()) {
       throw new IllegalArgumentException("appName is required");
     }
@@ -259,6 +290,7 @@ public class DefaultGupshupClient implements GupshupClient {
 
   @Override
   public CompletableFuture<OptInResponse> optInAsync(String appName, String phoneNumber) {
+    log.info("DefaultGupshupClient: optInAsync app: {} user: {}", appName, phoneNumber);
     if (appName == null || appName.trim().isEmpty()) {
       return CompletableFuture.failedFuture(new IllegalArgumentException("appName is required"));
     }
@@ -303,6 +335,7 @@ public class DefaultGupshupClient implements GupshupClient {
     private HttpClient httpClient;
     private ObjectMapper objectMapper;
     private GupshupHttpService httpService;
+    private ZoneId zoneId;
 
     public Builder appId(String appId) {
       this.appId = appId;
@@ -326,6 +359,63 @@ public class DefaultGupshupClient implements GupshupClient {
 
     public Builder httpService(GupshupHttpService httpService) {
       this.httpService = httpService;
+      return this;
+    }
+
+    /**
+     * Sets the ZoneId to adjust template timestamps.
+     *
+     * @param zoneId the target timezone ZoneId
+     * @return this Builder instance
+     */
+    public Builder zoneId(ZoneId zoneId) {
+      this.zoneId = zoneId;
+      return this;
+    }
+
+    /**
+     * Sets the ZoneId to adjust template timestamps.
+     *
+     * @param zoneId the target timezone ZoneId
+     * @return this Builder instance
+     */
+    public Builder utc(ZoneId zoneId) {
+      this.zoneId = zoneId;
+      return this;
+    }
+
+    /**
+     * Sets the ZoneOffset to adjust template timestamps.
+     *
+     * @param offset the target timezone ZoneOffset
+     * @return this Builder instance
+     */
+    public Builder utc(ZoneOffset offset) {
+      this.zoneId = offset;
+      return this;
+    }
+
+    /**
+     * Sets the UTC offset as a string to adjust template timestamps. Supports formats like
+     * "+02:00", "-05:00", "2", "-5", "Europe/Madrid", "UTC".
+     *
+     * @param utcOffset the target timezone offset string
+     * @return this Builder instance
+     */
+    public Builder utc(String utcOffset) {
+      if (utcOffset == null || utcOffset.trim().isEmpty()) {
+        this.zoneId = null;
+        return this;
+      }
+      String trimmed = utcOffset.trim();
+      if (trimmed.matches("^[+-]?\\d+$")) {
+        int hours = Integer.parseInt(trimmed);
+        this.zoneId = ZoneOffset.ofHours(hours);
+      } else if (trimmed.startsWith("+") || trimmed.startsWith("-")) {
+        this.zoneId = ZoneOffset.of(trimmed);
+      } else {
+        this.zoneId = ZoneId.of(trimmed);
+      }
       return this;
     }
 

@@ -12,8 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /** Implementation of GupshupHttpService using JDK's HttpClient. */
+@Slf4j
 public class JdkGupshupHttpService implements GupshupHttpService {
 
   private final String apiKey;
@@ -29,6 +31,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> T getWithParams(
       String path, Map<String, Object> queryParams, Class<T> responseType) {
+    log.info("Executing GET request to: {} with params: {}", path, queryParams);
     try {
       String finalPath = buildQueryString(path, queryParams);
 
@@ -48,6 +51,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> T postForm(
       String path, Map<String, Object> body, Class<T> responseType) {
+    log.info("Executing POST request to: {} with body: {}", path, body);
     try {
       String formBody = buildFormBody(body);
       HttpRequest request =
@@ -69,6 +73,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> CompletableFuture<T> postFormAsync(
       String path, Map<String, Object> body, Class<T> responseType) {
+    log.info("Executing async POST request to: {} with body: {}", path, body);
     try {
       String formBody = buildFormBody(body);
       HttpRequest request =
@@ -89,6 +94,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
 
   @Override
   public <T extends BaseGupshupResponse> T delete(String path, Class<T> responseType) {
+    log.info("Executing DELETE request to: {}", path);
     try {
       HttpRequest request = buildBaseRequest(path).DELETE().build();
 
@@ -105,6 +111,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> CompletableFuture<T> deleteAsync(
       String path, Class<T> responseType) {
+    log.info("Executing async DELETE request to: {}", path);
     try {
       HttpRequest request = buildBaseRequest(path).DELETE().build();
 
@@ -121,6 +128,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> T uploadMedia(
       String path, java.io.File file, Class<T> responseType) {
+    log.info("Executing upload media request to: {} with file: {}", path, file.getName());
     try {
       String boundary = "GupshupBoundary" + System.currentTimeMillis();
       String mimeType = java.nio.file.Files.probeContentType(file.toPath());
@@ -168,6 +176,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> CompletableFuture<T> uploadMediaAsync(
       String path, java.io.File file, Class<T> responseType) {
+    log.info("Executing async upload media request to: {} with file: {}", path, file.getName());
     try {
       String boundary = "GupshupBoundary" + System.currentTimeMillis();
       String mimeType = java.nio.file.Files.probeContentType(file.toPath());
@@ -277,6 +286,9 @@ public class JdkGupshupHttpService implements GupshupHttpService {
       HttpResponse<String> response, Class<T> responseType) {
     String body = response.body();
     int statusCode = response.statusCode();
+
+    log.info("[Gupshup API Response] Raw response body: {}", body);
+    System.out.println("[Gupshup API Response] Raw response body: " + body.toString());
 
     try {
       if (body == null || body.trim().isEmpty()) {

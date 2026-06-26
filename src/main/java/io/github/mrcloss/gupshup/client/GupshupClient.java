@@ -9,6 +9,7 @@ import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.OptInResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
+import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -44,6 +45,13 @@ import java.util.concurrent.CompletableFuture;
  * }</pre>
  */
 public interface GupshupClient {
+
+  /**
+   * Gets the target timezone ZoneId configured for this client.
+   *
+   * @return the configured ZoneId, or null if no timezone adjustment is set
+   */
+  ZoneId getZoneId();
 
   /**
    * Retrieves all templates from Gupshup.
