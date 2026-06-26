@@ -35,10 +35,11 @@ import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import io.github.mrcloss.gupshup.domain.template.VideoTemplate;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -85,67 +86,188 @@ public class GupshupResponseMapper {
     Integer codeExpirationMinutes = null;
     String mediaUrl = null;
     String mediaId = null;
+    Boolean isLTO = null;
+    Boolean hasExpiration = null;
+    String limitedOfferText = null;
 
+    // Try parsing containerMeta first if present
+    if (response.getContainerMeta() != null) {
+      String containerStr = response.getContainerMeta().trim();
+      if (containerStr.startsWith("{")) {
+        try {
+          JsonNode containerNode = customObjectMapper.readTree(containerStr);
+          if (containerNode.has("data")) {
+            body = containerNode.get("data").asText();
+          } else if (containerNode.has("body")) {
+            body = containerNode.get("body").asText();
+          } else if (containerNode.has("content")) {
+            body = containerNode.get("content").asText();
+          }
+
+          if (containerNode.has("footer")) {
+            footer = containerNode.get("footer").asText();
+          }
+
+          if (containerNode.has("header")) {
+            header = containerNode.get("header").asText();
+          }
+
+          if (containerNode.has("variableExamples")) {
+            variableExamples =
+                customObjectMapper.convertValue(
+                    containerNode.get("variableExamples"), new TypeReference<List<String>>() {});
+          } else if (containerNode.has("sampleText") && body != null) {
+            variableExamples =
+                extractVariableExamples(body, containerNode.get("sampleText").asText());
+          }
+
+          if (containerNode.has("variableHeaderExamples")) {
+            variableHeaderExamples =
+                customObjectMapper.convertValue(
+                    containerNode.get("variableHeaderExamples"),
+                    new TypeReference<List<String>>() {});
+          } else if (containerNode.has("sampleHeader") && header != null) {
+            variableHeaderExamples =
+                extractVariableExamples(header, containerNode.get("sampleHeader").asText());
+          }
+
+          if (containerNode.has("mediaUrl")) {
+            mediaUrl = containerNode.get("mediaUrl").asText();
+          }
+
+          if (containerNode.has("mediaId")) {
+            mediaId = containerNode.get("mediaId").asText();
+          }
+
+          if (containerNode.has("addSecurityRecommendation")) {
+            addSecurityRecommendation = containerNode.get("addSecurityRecommendation").asBoolean();
+          }
+
+          if (containerNode.has("codeExpirationMinutes")) {
+            codeExpirationMinutes = containerNode.get("codeExpirationMinutes").asInt();
+          }
+
+          if (containerNode.has("buttons")) {
+            buttons = parseButtons(containerNode.get("buttons"), customObjectMapper);
+          }
+
+          if (containerNode.has("cards")) {
+            cards = parseCards(containerNode.get("cards"), customObjectMapper);
+          }
+
+          if (containerNode.has("isLTO")) {
+            isLTO = containerNode.get("isLTO").asBoolean();
+          }
+          if (containerNode.has("hasExpiration")) {
+            hasExpiration = containerNode.get("hasExpiration").asBoolean();
+          }
+          if (containerNode.has("limitedOfferText")) {
+            limitedOfferText = containerNode.get("limitedOfferText").asText();
+          }
+        } catch (Exception e) {
+          // Ignore
+        }
+      }
+    }
+
+    // Try parsing data if present and starts with {
     if (response.getData() != null) {
       String dataStr = response.getData().trim();
       if (dataStr.startsWith("{")) {
         try {
           JsonNode dataNode = customObjectMapper.readTree(dataStr);
-          if (dataNode.has("body")) {
-            body = dataNode.get("body").asText();
-          } else if (dataNode.has("content")) {
-            body = dataNode.get("content").asText();
+          if (body == null) {
+            if (dataNode.has("body")) {
+              body = dataNode.get("body").asText();
+            } else if (dataNode.has("content")) {
+              body = dataNode.get("content").asText();
+            }
           }
 
-          if (dataNode.has("footer")) {
+          if (footer == null && dataNode.has("footer")) {
             footer = dataNode.get("footer").asText();
           }
 
-          if (dataNode.has("header")) {
+          if (header == null && dataNode.has("header")) {
             header = dataNode.get("header").asText();
           }
 
-          if (dataNode.has("variableExamples")) {
-            variableExamples =
-                customObjectMapper.convertValue(
-                    dataNode.get("variableExamples"), new TypeReference<List<String>>() {});
+          if (variableExamples == null) {
+            if (dataNode.has("variableExamples")) {
+              variableExamples =
+                  customObjectMapper.convertValue(
+                      dataNode.get("variableExamples"), new TypeReference<List<String>>() {});
+            } else if (dataNode.has("sampleText") && body != null) {
+              variableExamples = extractVariableExamples(body, dataNode.get("sampleText").asText());
+            }
           }
 
-          if (dataNode.has("variableHeaderExamples")) {
-            variableHeaderExamples =
-                customObjectMapper.convertValue(
-                    dataNode.get("variableHeaderExamples"), new TypeReference<List<String>>() {});
+          if (variableHeaderExamples == null) {
+            if (dataNode.has("variableHeaderExamples")) {
+              variableHeaderExamples =
+                  customObjectMapper.convertValue(
+                      dataNode.get("variableHeaderExamples"), new TypeReference<List<String>>() {});
+            } else if (dataNode.has("sampleHeader") && header != null) {
+              variableHeaderExamples =
+                  extractVariableExamples(header, dataNode.get("sampleHeader").asText());
+            }
           }
 
-          if (dataNode.has("mediaUrl")) {
+          if (mediaUrl == null && dataNode.has("mediaUrl")) {
             mediaUrl = dataNode.get("mediaUrl").asText();
           }
 
-          if (dataNode.has("mediaId")) {
+          if (mediaId == null && dataNode.has("mediaId")) {
             mediaId = dataNode.get("mediaId").asText();
           }
 
-          if (dataNode.has("addSecurityRecommendation")) {
+          if (addSecurityRecommendation == null && dataNode.has("addSecurityRecommendation")) {
             addSecurityRecommendation = dataNode.get("addSecurityRecommendation").asBoolean();
           }
 
-          if (dataNode.has("codeExpirationMinutes")) {
+          if (codeExpirationMinutes == null && dataNode.has("codeExpirationMinutes")) {
             codeExpirationMinutes = dataNode.get("codeExpirationMinutes").asInt();
           }
 
-          if (dataNode.has("buttons")) {
+          if (buttons == null && dataNode.has("buttons")) {
             buttons = parseButtons(dataNode.get("buttons"), customObjectMapper);
           }
 
-          if (dataNode.has("cards")) {
+          if (cards == null && dataNode.has("cards")) {
             cards = parseCards(dataNode.get("cards"), customObjectMapper);
           }
+
+          if (isLTO == null && dataNode.has("isLTO")) {
+            isLTO = dataNode.get("isLTO").asBoolean();
+          }
+          if (hasExpiration == null && dataNode.has("hasExpiration")) {
+            hasExpiration = dataNode.get("hasExpiration").asBoolean();
+          }
+          if (limitedOfferText == null && dataNode.has("limitedOfferText")) {
+            limitedOfferText = dataNode.get("limitedOfferText").asText();
+          }
         } catch (Exception e) {
-          // Fallback: treat data as body if JSON parsing fails
-          body = response.getData();
+          // Ignore
         }
-      } else {
-        body = response.getData();
+      }
+    }
+
+    if (body == null && response.getData() != null) {
+      body = response.getData();
+    }
+
+    // Try parsing meta if present and starts with {
+    if (variableExamples == null && response.getMeta() != null) {
+      String metaStr = response.getMeta().trim();
+      if (metaStr.startsWith("{")) {
+        try {
+          JsonNode metaNode = customObjectMapper.readTree(metaStr);
+          if (metaNode.has("example") && body != null) {
+            variableExamples = extractVariableExamples(body, metaNode.get("example").asText());
+          }
+        } catch (Exception e) {
+          // Ignore
+        }
       }
     }
 
@@ -179,11 +301,7 @@ public class GupshupResponseMapper {
 
     TemplateStatus status = null;
     if (response.getStatus() != null) {
-      try {
-        status = TemplateStatus.valueOf(response.getStatus().toUpperCase());
-      } catch (Exception e) {
-        // Ignore status conversion exceptions
-      }
+      status = TemplateStatus.fromString(response.getStatus());
     }
 
     String elementName = response.getElementName();
@@ -391,17 +509,11 @@ public class GupshupResponseMapper {
     template.setReason(response.getReason());
 
     if (response.getCreatedOn() != null) {
-      template.setCreatedOn(
-          response.getCreatedOn() > 9999999999L
-              ? Instant.ofEpochMilli(response.getCreatedOn())
-              : Instant.ofEpochSecond(response.getCreatedOn()));
+      template.setCreatedOn(response.getCreatedOn());
     }
 
     if (response.getModifiedOn() != null) {
-      template.setModifiedOn(
-          response.getModifiedOn() > 9999999999L
-              ? Instant.ofEpochMilli(response.getModifiedOn())
-              : Instant.ofEpochSecond(response.getModifiedOn()));
+      template.setModifiedOn(response.getModifiedOn());
     }
 
     if (footer != null) {
@@ -418,19 +530,9 @@ public class GupshupResponseMapper {
     }
 
     // Map LTO Attributes
-    if (response.getData() != null) {
-      try {
-        JsonNode dataNode = customObjectMapper.readTree(response.getData());
-        if (dataNode.has("isLTO") && dataNode.get("isLTO").asBoolean()) {
-          boolean hasExpiration =
-              dataNode.has("hasExpiration") && dataNode.get("hasExpiration").asBoolean();
-          String limitedOfferText =
-              dataNode.has("limitedOfferText") ? dataNode.get("limitedOfferText").asText() : null;
-          template.setLtoAttributes(new LTOAttributes(hasExpiration, limitedOfferText));
-        }
-      } catch (Exception e) {
-        // Ignore LTO mapping exceptions
-      }
+    if (isLTO != null && isLTO) {
+      template.setLtoAttributes(
+          new LTOAttributes(hasExpiration != null && hasExpiration, limitedOfferText));
     }
 
     return template;
@@ -605,5 +707,18 @@ public class GupshupResponseMapper {
       }
     }
     return card;
+  }
+
+  private static List<String> extractVariableExamples(String content, String example) {
+    if (content == null || example == null || example.isEmpty()) {
+      return null;
+    }
+    List<String> examples = new ArrayList<>();
+    Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+    Matcher matcher = pattern.matcher(example);
+    while (matcher.find()) {
+      examples.add(matcher.group(1));
+    }
+    return examples.isEmpty() ? null : examples;
   }
 }
