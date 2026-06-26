@@ -27,6 +27,7 @@ public class TemplateRequest {
   private String footer;
   private Integer messageValidity;
   private List<ButtonRequest> buttons;
+  private String reason;
 
   @JsonUnwrapped private LTOAttributes ltoAttributes;
 }

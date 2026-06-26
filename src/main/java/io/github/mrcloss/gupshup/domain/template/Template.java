@@ -1,5 +1,6 @@
 package io.github.mrcloss.gupshup.domain.template;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.github.mrcloss.gupshup.domain.button.Button;
 import io.github.mrcloss.gupshup.domain.button.CatalogButton;
@@ -37,16 +38,24 @@ public class Template {
   private String appId;
   private TemplateStatus status;
   private TemplateCategory category;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, timezone = "UTC")
   private Instant createdOn;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, timezone = "UTC")
   private Instant modifiedOn;
+
   private String body; // data / content
   private List<String> variableExamples;
   private String elementName;
   private LanguageCode languageCode;
-  private TemplateParameterFormat parameterFormat;
+  private TemplateParameterFormat parameterFormat = TemplateParameterFormat.POSITIONAL;
   private TemplateType templateType;
   private List<String> tags; // vertical
+
+  /** The rejection or error reason for this template, if any. Defaults to null. */
   private String reason;
+
   private String footer;
   private Integer messageValidity;
   private List<Button> buttons = new ArrayList<>();
@@ -170,6 +179,20 @@ public class Template {
       validateButtons(buttons);
     }
     this.buttons = buttons;
+  }
+
+  /**
+   * Sets the message validity duration in seconds.
+   *
+   * @param messageValidity the validity duration (between 43200 and 2592000 seconds)
+   * @throws IllegalArgumentException if the validity duration is outside the allowed range
+   */
+  public void setMessageValidity(Integer messageValidity) {
+    if (messageValidity != null && (messageValidity < 43200 || messageValidity > 2592000)) {
+      throw new IllegalArgumentException(
+          "Message validity must be between 43200 and 2592000 seconds");
+    }
+    this.messageValidity = messageValidity;
   }
 
   /**
@@ -303,6 +326,17 @@ public class Template {
           throw new IllegalStateException(
               "LTO templates with expiration must have at least one COPY_CODE button");
         }
+      }
+    }
+
+    if (messageValidity != null) {
+      if (category != TemplateCategory.MARKETING) {
+        throw new IllegalStateException(
+            "Message validity is only allowed for MARKETING category templates");
+      }
+      if (messageValidity < 43200 || messageValidity > 2592000) {
+        throw new IllegalStateException(
+            "Message validity for marketing template must be between 43200 and 2592000 seconds");
       }
     }
   }

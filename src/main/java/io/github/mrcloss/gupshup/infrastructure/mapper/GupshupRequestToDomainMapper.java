@@ -277,6 +277,7 @@ public class GupshupRequestToDomainMapper {
     template.setFooter(request.getFooter());
     template.setMessageValidity(request.getMessageValidity());
     template.setLtoAttributes(request.getLtoAttributes());
+    template.setReason(request.getReason());
 
     if (request.getButtons() != null && !request.getButtons().isEmpty()) {
       if (!(template instanceof CatalogTemplate)
@@ -305,11 +306,23 @@ public class GupshupRequestToDomainMapper {
     if (cardRequest == null) {
       return null;
     }
-    String body = cardRequest.getContent();
+    String body = cardRequest.getBody();
     List<String> variableExamples = extractVariableExamples(body, cardRequest.getSampleText());
 
     CarouselCard.CarouselCardHeaderType headerType = CarouselCard.CarouselCardHeaderType.IMAGE;
-    if (cardRequest.getMediaUrl() != null) {
+    if (cardRequest.getHeaderType() != null) {
+      try {
+        headerType =
+            CarouselCard.CarouselCardHeaderType.valueOf(cardRequest.getHeaderType().toUpperCase());
+      } catch (Exception e) {
+        if (cardRequest.getMediaUrl() != null) {
+          String lower = cardRequest.getMediaUrl().toLowerCase();
+          if (lower.endsWith(".mp4") || lower.endsWith(".3gp") || lower.endsWith(".m4v")) {
+            headerType = CarouselCard.CarouselCardHeaderType.VIDEO;
+          }
+        }
+      }
+    } else if (cardRequest.getMediaUrl() != null) {
       String lower = cardRequest.getMediaUrl().toLowerCase();
       if (lower.endsWith(".mp4") || lower.endsWith(".3gp") || lower.endsWith(".m4v")) {
         headerType = CarouselCard.CarouselCardHeaderType.VIDEO;

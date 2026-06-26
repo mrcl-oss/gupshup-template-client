@@ -39,6 +39,7 @@ public class GupshupRequestToDomainMapperTest {
     assertEquals(LanguageCode.SPANISH, textTemplate.getLanguageCode());
     assertEquals("Hola {{1}}, tu código es {{2}}.", textTemplate.getBody());
     assertEquals("¡Hola!", textTemplate.getHeader());
+    assertNull(textTemplate.getReason());
 
     assertNotNull(textTemplate.getVariableExamples());
     assertEquals(2, textTemplate.getVariableExamples().size());
@@ -55,6 +56,7 @@ public class GupshupRequestToDomainMapperTest {
     request.setCategory(TemplateCategory.UTILITY);
     request.setTemplateType(TemplateType.IMAGE);
     request.setMediaUrl("https://example.com/image.png");
+    request.setReason("Rejection reason");
 
     ButtonRequest btn = new ButtonRequest();
     btn.setType(ButtonType.QUICK_REPLY);
@@ -69,6 +71,7 @@ public class GupshupRequestToDomainMapperTest {
 
     assertEquals("test_image", imageTemplate.getElementName());
     assertEquals("https://example.com/image.png", imageTemplate.getMediaUrl());
+    assertEquals("Rejection reason", imageTemplate.getReason());
     assertEquals(1, imageTemplate.getButtons().size());
     assertEquals("Click me", imageTemplate.getButtons().get(0).getText());
   }

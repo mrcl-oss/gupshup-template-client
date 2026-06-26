@@ -64,6 +64,7 @@ public class GupshupRequestMapper {
     request.setFooter(template.getFooter());
     request.setMessageValidity(template.getMessageValidity());
     request.setLtoAttributes(template.getLtoAttributes());
+    request.setReason(template.getReason());
 
     if (template.getTags() != null) {
       request.setVertical(String.join(",", template.getTags()));
@@ -143,10 +144,13 @@ public class GupshupRequestMapper {
 
   private static CarouselCardRequest mapCard(CarouselCard card) {
     CarouselCardRequest request = new CarouselCardRequest();
-    request.setContent(card.getBody());
+    request.setBody(card.getBody());
     request.setMediaId(card.getMediaId());
     request.setMediaUrl(card.getMediaUrl());
     request.setSampleText(formatExample(card.getBody(), card.getVariableExamples()));
+    if (card.getHeaderType() != null) {
+      request.setHeaderType(card.getHeaderType().name());
+    }
     if (card.getButtons() != null) {
       request.setButtons(
           card.getButtons().stream()
