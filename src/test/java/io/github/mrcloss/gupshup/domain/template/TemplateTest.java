@@ -218,4 +218,29 @@ public class TemplateTest {
     textTemplate.setTemplateType(TemplateType.PRODUCT);
     assertFalse(textTemplate.isMediaRequired());
   }
+
+  @Test
+  public void shouldDefaultMessageValidityToNull() {
+    Template template = createBaseTemplate();
+    org.junit.jupiter.api.Assertions.assertNull(template.getMessageValidity());
+  }
+
+  @Test
+  public void shouldNotAllowInvalidMessageValidityInSetter() {
+    Template template = createBaseTemplate();
+    assertThrows(IllegalArgumentException.class, () -> template.setMessageValidity(0));
+    assertThrows(IllegalArgumentException.class, () -> template.setMessageValidity(43199));
+    assertThrows(IllegalArgumentException.class, () -> template.setMessageValidity(2592001));
+    template.setMessageValidity(43200); // Should pass
+    template.setMessageValidity(2592000); // Should pass
+    template.setMessageValidity(null); // Should pass
+  }
+
+  @Test
+  public void shouldNotAllowMessageValidityForNonMarketingTemplates() {
+    Template template = createBaseTemplate();
+    template.setMessageValidity(50000);
+    template.setCategory(TemplateCategory.UTILITY);
+    assertThrows(IllegalStateException.class, template::validate);
+  }
 }

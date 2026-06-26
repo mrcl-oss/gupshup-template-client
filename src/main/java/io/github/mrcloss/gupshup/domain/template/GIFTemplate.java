@@ -50,6 +50,6 @@ public class GIFTemplate extends MediaTemplate {
 
   @Override
   public String[] getAllowedExtensions() {
-    return new String[] {".gif"};
+    return new String[] {".mp4"};
   }
 }

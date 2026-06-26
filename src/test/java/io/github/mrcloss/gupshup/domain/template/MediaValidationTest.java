@@ -73,7 +73,7 @@ public class MediaValidationTest {
   }
 
   @Test
-  public void gifTemplateShouldOnlyAllowGifExtensions() {
+  public void gifTemplateShouldOnlyAllowMp4Extensions() {
     GIFTemplate template =
         new GIFTemplate(
             "test_media",
@@ -83,14 +83,14 @@ public class MediaValidationTest {
             "app-123",
             null,
             TemplateParameterFormat.POSITIONAL);
-    template.setMediaUrl("https://example.com/animation.gif"); // Valid
+    template.setMediaUrl("https://example.com/animation.mp4"); // Valid
 
     assertThrows(
         IllegalArgumentException.class,
         () -> {
-          template.setMediaUrl("https://example.com/image.png");
+          template.setMediaUrl("https://example.com/animation.gif");
         },
-        "GIF template should only allow .gif files");
+        "GIF template should only allow .mp4 files");
   }
 
   @Test
