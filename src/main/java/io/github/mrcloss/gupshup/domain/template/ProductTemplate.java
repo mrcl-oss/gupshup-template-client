@@ -104,8 +104,7 @@ public class ProductTemplate extends Template {
 
     boolean hasHeaderExamples = variableHeaderExamples != null && !variableHeaderExamples.isEmpty();
     boolean hasVariablesInHeader =
-        header != null
-            && java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header).find();
+        java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header).find();
 
     if (hasVariablesInHeader && !hasHeaderExamples) {
       throw new IllegalStateException(
