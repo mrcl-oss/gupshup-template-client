@@ -112,10 +112,6 @@ public class ProductTemplate extends Template {
     }
 
     if (hasHeaderExamples) {
-      if (header == null) {
-        throw new IllegalStateException(
-            "Header is required when variable header examples are provided");
-      }
       for (int i = 1; i <= variableHeaderExamples.size(); i++) {
         String placeholder = "{{" + i + "}}";
         if (!header.contains(placeholder)) {
