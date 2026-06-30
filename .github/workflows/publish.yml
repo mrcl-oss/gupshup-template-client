@@ -34,7 +34,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Create Maven settings.xml
         run: |
