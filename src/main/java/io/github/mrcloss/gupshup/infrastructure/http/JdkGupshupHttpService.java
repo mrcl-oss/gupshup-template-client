@@ -288,7 +288,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
     int statusCode = response.statusCode();
 
     log.info("[Gupshup API Response] Raw response body: {}", body);
-    System.out.println("[Gupshup API Response] Raw response body: " + body.toString());
+    System.out.println("[Gupshup API Response] Raw response body: " + body);
 
     try {
       if (body == null || body.trim().isEmpty()) {
