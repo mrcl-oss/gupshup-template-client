@@ -26,7 +26,9 @@ public class OTPButton extends Button {
 
   @Override
   public void validate() {
-    validateText(getText());
+    if (getText() != null && !getText().trim().isEmpty()) {
+      validateText(getText());
+    }
     if (otpType == null) {
       throw new IllegalStateException("OTP type is required");
     }

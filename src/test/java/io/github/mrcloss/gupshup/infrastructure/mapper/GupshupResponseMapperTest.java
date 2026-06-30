@@ -227,13 +227,11 @@ class GupshupResponseMapperTest {
     assertTrue(authTemplate.isAddSecurityRecommendation());
     assertEquals(5, authTemplate.getCodeExpirationMinutes());
     assertEquals(
-        "Your verification code is {{1}}. For your security, do not share this code.",
+        "{{1}} is your verification code. For your security, do not share this code.",
         authTemplate.getBody());
     assertEquals(1, authTemplate.getButtons().size());
     assertTrue(authTemplate.getButtons().get(0) instanceof CopyCodeButton);
-    assertEquals(
-        "This code expires in {{codeExpirationMinutes}} minutes",
-        authTemplate.getButtons().get(0).getText());
+    assertEquals("Copy code", authTemplate.getButtons().get(0).getText());
   }
 
   @Test

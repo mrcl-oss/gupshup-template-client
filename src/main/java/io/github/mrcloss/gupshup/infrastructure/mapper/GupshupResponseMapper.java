@@ -460,7 +460,7 @@ public class GupshupResponseMapper {
           break;
 
         case PRODUCT:
-          template =
+          ProductTemplate prodTemplate =
               new ProductTemplate(
                   elementName,
                   languageCode,
@@ -470,6 +470,13 @@ public class GupshupResponseMapper {
                   appId,
                   tags,
                   parameterFormat);
+          if (header != null) {
+            prodTemplate.setHeader(header);
+          }
+          if (variableHeaderExamples != null) {
+            prodTemplate.setVariableHeaderExamples(variableHeaderExamples);
+          }
+          template = prodTemplate;
           break;
 
         case CAROUSEL:

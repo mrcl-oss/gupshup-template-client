@@ -63,4 +63,24 @@ public class ProductValidationTest {
           template.setButtons(List.of(new QuickReplyButton("Test")));
         });
   }
+
+  @Test
+  public void productTemplateShouldRequireHeaderOnValidate() {
+    ProductTemplate template =
+        new ProductTemplate(
+            "test_product",
+            LanguageCode.ENGLISH,
+            "Product body",
+            TemplateCategory.MARKETING,
+            "app-123",
+            null,
+            TemplateParameterFormat.POSITIONAL);
+
+    // Without a header, validation should fail
+    assertThrows(IllegalStateException.class, () -> template.validate());
+
+    // With a header, validation should succeed
+    template.setHeader("Our product header");
+    assertDoesNotThrow(() -> template.validate());
+  }
 }

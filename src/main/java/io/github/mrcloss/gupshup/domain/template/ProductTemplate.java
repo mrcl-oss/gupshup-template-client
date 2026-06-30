@@ -69,6 +69,68 @@ public class ProductTemplate extends Template {
     super.setButtons(Collections.singletonList(new MPMButton("View items")));
   }
 
+  private String header;
+  private List<String> variableHeaderExamples;
+
+  public void setHeader(String header) {
+    if (header != null) {
+      java.util.regex.Matcher matcher =
+          java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header);
+      int count = 0;
+      while (matcher.find()) {
+        count++;
+      }
+      if (count > 1) {
+        throw new IllegalArgumentException("Product template header can have at most 1 variable");
+      }
+    }
+    this.header = header;
+  }
+
+  public String getFilledHeader() {
+    return fillVariables(this.header, this.variableHeaderExamples);
+  }
+
+  public String getFilledHeader(List<String> variables) {
+    return fillVariables(this.header, variables);
+  }
+
+  @Override
+  public void validate() {
+    super.validate();
+    if (header == null || header.trim().isEmpty()) {
+      throw new IllegalStateException("Header is required for templates with an MPM button");
+    }
+
+    boolean hasHeaderExamples = variableHeaderExamples != null && !variableHeaderExamples.isEmpty();
+    boolean hasVariablesInHeader =
+        header != null
+            && java.util.regex.Pattern.compile("\\{\\{\\d+\\}\\}").matcher(header).find();
+
+    if (hasVariablesInHeader && !hasHeaderExamples) {
+      throw new IllegalStateException(
+          "Header cannot contain variables if variable header examples are not provided");
+    }
+
+    if (hasHeaderExamples) {
+      if (header == null) {
+        throw new IllegalStateException(
+            "Header is required when variable header examples are provided");
+      }
+      for (int i = 1; i <= variableHeaderExamples.size(); i++) {
+        String placeholder = "{{" + i + "}}";
+        if (!header.contains(placeholder)) {
+          throw new IllegalStateException(
+              "Header must contain "
+                  + placeholder
+                  + " when "
+                  + variableHeaderExamples.size()
+                  + " variable header examples are provided");
+        }
+      }
+    }
+  }
+
   @Override
   public void setButtons(List<Button> buttons) {
     throw new UnsupportedOperationException("Product template buttons cannot be modified");

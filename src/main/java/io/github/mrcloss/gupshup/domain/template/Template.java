@@ -120,12 +120,12 @@ public class Template {
       TemplateParameterFormat parameterFormat) {
     this.elementName = elementName;
     this.languageCode = languageCode;
+    this.category = category;
+    this.templateType = templateType;
     setBody(body);
     this.variableExamples = variableExamples;
-    this.category = category;
     this.appId = appId;
     this.tags = tags;
-    this.templateType = templateType;
     this.parameterFormat = parameterFormat;
   }
 
@@ -137,7 +137,7 @@ public class Template {
    *     variable
    */
   public void setBody(String body) {
-    if (body != null) {
+    if (body != null && category != TemplateCategory.AUTHENTICATION) {
       if (body.length() > 1024) {
         throw new IllegalArgumentException("Template body cannot exceed 1024 characters");
       }
@@ -178,7 +178,7 @@ public class Template {
       }
       validateButtons(buttons);
     }
-    this.buttons = buttons;
+    this.buttons = (buttons == null) ? new ArrayList<>() : buttons;
   }
 
   /**
@@ -271,7 +271,10 @@ public class Template {
     if (category == null) {
       throw new IllegalStateException("Category is required");
     }
-    if (body != null) {
+    if (category == TemplateCategory.AUTHENTICATION && templateType != TemplateType.TEXT) {
+      throw new IllegalStateException("Authentication templates must be of type TEXT");
+    }
+    if (body != null && category != TemplateCategory.AUTHENTICATION) {
       if (body.matches("^\\{\\{\\d+\\}\\}.*")) {
         throw new IllegalStateException("Template body cannot start with a variable");
       }

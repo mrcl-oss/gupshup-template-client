@@ -10,4 +10,9 @@ import lombok.ToString;
 public class SendTemplateResponse extends BaseGupshupResponse {
   String status;
   String messageId;
+
+  @Override
+  public boolean isSuccess() {
+    return "success".equalsIgnoreCase(status) || "submitted".equalsIgnoreCase(status);
+  }
 }

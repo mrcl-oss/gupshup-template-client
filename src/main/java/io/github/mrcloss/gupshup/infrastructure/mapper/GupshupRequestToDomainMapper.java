@@ -29,7 +29,6 @@ import io.github.mrcloss.gupshup.domain.template.ProductTemplate;
 import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import io.github.mrcloss.gupshup.domain.template.VideoTemplate;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.AuthenticationTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.ButtonRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.CarouselCardRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.CarouselTemplateRequest;
@@ -37,6 +36,7 @@ import io.github.mrcloss.gupshup.infrastructure.dto.request.CopyCodeButtonReques
 import io.github.mrcloss.gupshup.infrastructure.dto.request.MediaTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.OTPButtonRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.PhoneNumberButtonRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.ProductTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.TemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.TextTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.UrlButtonRequest;
@@ -82,9 +82,7 @@ public class GupshupRequestToDomainMapper {
 
     Template template;
 
-    if (category == TemplateCategory.AUTHENTICATION
-        && request instanceof AuthenticationTemplateRequest) {
-      AuthenticationTemplateRequest authRequest = (AuthenticationTemplateRequest) request;
+    if (category == TemplateCategory.AUTHENTICATION) {
       AuthenticationTemplate authTemplate =
           new AuthenticationTemplate(
               elementName, languageCode, body, variableExamples, appId, tags, parameterFormat);
@@ -222,7 +220,7 @@ public class GupshupRequestToDomainMapper {
           break;
 
         case PRODUCT:
-          template =
+          ProductTemplate prodTemplate =
               new ProductTemplate(
                   elementName,
                   languageCode,
@@ -232,6 +230,15 @@ public class GupshupRequestToDomainMapper {
                   appId,
                   tags,
                   parameterFormat);
+          if (request instanceof ProductTemplateRequest) {
+            ProductTemplateRequest prodRequest = (ProductTemplateRequest) request;
+            prodTemplate.setHeader(prodRequest.getHeader());
+            if (prodRequest.getHeader() != null && prodRequest.getExampleHeader() != null) {
+              prodTemplate.setVariableHeaderExamples(
+                  extractVariableExamples(prodRequest.getHeader(), prodRequest.getExampleHeader()));
+            }
+          }
+          template = prodTemplate;
           break;
 
         case CAROUSEL:

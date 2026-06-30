@@ -96,13 +96,15 @@ class GupshupRequestMapperTest {
 
     assertTrue(request instanceof AuthenticationTemplateRequest);
     assertEquals(
-        "Your code is {{1}}. For your security, do not share this code.", request.getContent());
+        "{{1}} is your verification code. For your security, do not share this code.",
+        request.getContent());
     assertEquals(
-        "Your code is [123456]. For your security, do not share this code.", request.getExample());
+        "[123456] is your verification code. For your security, do not share this code.",
+        request.getExample());
     assertEquals("Template rejection reason", request.getReason());
     assertEquals(1, request.getButtons().size());
-    assertTrue(request.getButtons().get(0) instanceof CopyCodeButtonRequest);
-    assertEquals("123456", ((CopyCodeButtonRequest) request.getButtons().get(0)).getExample());
+    assertTrue(request.getButtons().get(0) instanceof OTPButtonRequest);
+    assertEquals("COPY_CODE", ((OTPButtonRequest) request.getButtons().get(0)).getOtpType());
   }
 
   @Test

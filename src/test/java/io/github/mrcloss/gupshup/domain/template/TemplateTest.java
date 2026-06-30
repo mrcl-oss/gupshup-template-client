@@ -243,4 +243,13 @@ public class TemplateTest {
     template.setCategory(TemplateCategory.UTILITY);
     assertThrows(IllegalStateException.class, template::validate);
   }
+
+  @Test
+  public void shouldHandleNullButtonsSafely() {
+    Template template = createBaseTemplate();
+    org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> template.setButtons(null));
+    org.junit.jupiter.api.Assertions.assertNotNull(template.getButtons());
+    assertTrue(template.getButtons().isEmpty());
+    org.junit.jupiter.api.Assertions.assertDoesNotThrow(template::validate);
+  }
 }
