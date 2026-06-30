@@ -78,8 +78,8 @@ public class DefaultGupshupClient implements GupshupClient {
 
   @Override
   public GetTemplatesResponse getTemplates(QueryParams queryParams) {
-    log.info("DefaultGupshupClient: getTemplates with params: {}", queryParams);
     Map<String, Object> queryParamsMap = convertToMap(queryParams);
+    log.info("DefaultGupshupClient: getTemplates with params: {}", queryParamsMap);
     return httpService.getWithParams(templateUrl, queryParamsMap, GetTemplatesResponse.class);
   }
 
