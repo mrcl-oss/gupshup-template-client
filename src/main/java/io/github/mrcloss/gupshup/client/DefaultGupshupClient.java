@@ -268,8 +268,8 @@ public class DefaultGupshupClient implements GupshupClient {
 
   @Override
   public SendTemplateResponse sendTemplate(SendTemplateRequest sendTemplate) {
-    log.info("DefaultGupshupClient: sendTemplate request: {}", sendTemplate);
     Map<String, Object> body = convertToMap(sendTemplate);
+    log.info("DefaultGupshupClient: sendTemplate request: {}", body);
     return httpService.postForm(sendTemplateUrl, body, SendTemplateResponse.class);
   }
 
