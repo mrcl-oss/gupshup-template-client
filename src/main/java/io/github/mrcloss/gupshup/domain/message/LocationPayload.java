@@ -1,6 +1,7 @@
 package io.github.mrcloss.gupshup.domain.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.List;
@@ -11,12 +12,19 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocationPayload extends GupshupMessage {
   private final LocationWrapper location;
 
   @JsonProperty("postbackTexts")
   @lombok.Getter(lombok.AccessLevel.NONE)
   private final Object postbackTexts;
+
+  public LocationPayload(double latitude, double longitude, String name, String address) {
+    super(MessageType.LOCATION);
+    this.location = new LocationWrapper(latitude, longitude, name, address);
+    this.postbackTexts = null;
+  }
 
   public LocationPayload(
       double latitude, double longitude, String name, String address, int index, String text) {

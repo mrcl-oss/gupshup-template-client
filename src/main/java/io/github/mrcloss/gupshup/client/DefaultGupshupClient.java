@@ -9,13 +9,12 @@ import io.github.mrcloss.gupshup.domain.template.CarouselTemplate;
 import io.github.mrcloss.gupshup.domain.template.MediaTemplate;
 import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.QueryParams;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.SendTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.TemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesResponse;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.OptInResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.UploadMediaResponse;
 import io.github.mrcloss.gupshup.infrastructure.http.GupshupHttpService;
@@ -274,34 +273,54 @@ public class DefaultGupshupClient implements GupshupClient {
     return httpService.postForm(sendTemplateUrl, body, SendTemplateResponse.class);
   }
 
-  @Override
-  public OptInResponse optIn(String appName, String phoneNumber) {
-    log.info("DefaultGupshupClient: optIn app: {} user: {}", appName, phoneNumber);
-    if (appName == null || appName.trim().isEmpty()) {
-      throw new IllegalArgumentException("appName is required");
-    }
-    if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-      throw new IllegalArgumentException("phoneNumber is required");
-    }
-    String optInUrl = String.format("https://api.gupshup.io/wa/api/v1/optedin/%s", appName);
-    Map<String, Object> body = Map.of("user", phoneNumber);
-    return httpService.postForm(optInUrl, body, OptInResponse.class);
-  }
+  // @Override
+  // public OptInResponse optIn(String appName, String phoneNumber) {
+  //     log.info(
+  //         "DefaultGupshupClient: optIn app: {} user: {}",
+  //         appName,
+  //         phoneNumber
+  //     );
+  //     if (appName == null || appName.trim().isEmpty()) {
+  //         throw new IllegalArgumentException("appName is required");
+  //     }
+  //     if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+  //         throw new IllegalArgumentException("phoneNumber is required");
+  //     }
+  //     String optInUrl = String.format(
+  //         "https://api.gupshup.io/wa/api/v1/app/opt/in/%s",
+  //         appName
+  //     );
+  //     Map<String, Object> body = Map.of("user", phoneNumber);
+  //     return httpService.postForm(optInUrl, body, OptInResponse.class);
+  // }
 
-  @Override
-  public CompletableFuture<OptInResponse> optInAsync(String appName, String phoneNumber) {
-    log.info("DefaultGupshupClient: optInAsync app: {} user: {}", appName, phoneNumber);
-    if (appName == null || appName.trim().isEmpty()) {
-      return CompletableFuture.failedFuture(new IllegalArgumentException("appName is required"));
-    }
-    if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-      return CompletableFuture.failedFuture(
-          new IllegalArgumentException("phoneNumber is required"));
-    }
-    String optInUrl = String.format("https://api.gupshup.io/wa/api/v1/optedin/%s", appName);
-    Map<String, Object> body = Map.of("user", phoneNumber);
-    return httpService.postFormAsync(optInUrl, body, OptInResponse.class);
-  }
+  // @Override
+  // public CompletableFuture<OptInResponse> optInAsync(
+  //     String appName,
+  //     String phoneNumber
+  // ) {
+  //     log.info(
+  //         "DefaultGupshupClient: optInAsync app: {} user: {}",
+  //         appName,
+  //         phoneNumber
+  //     );
+  //     if (appName == null || appName.trim().isEmpty()) {
+  //         return CompletableFuture.failedFuture(
+  //             new IllegalArgumentException("appName is required")
+  //         );
+  //     }
+  //     if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+  //         return CompletableFuture.failedFuture(
+  //             new IllegalArgumentException("phoneNumber is required")
+  //         );
+  //     }
+  //     String optInUrl = String.format(
+  //         "https://api.gupshup.io/wa/api/v1/app/opt/in/%s",
+  //         appName
+  //     );
+  //     Map<String, Object> body = Map.of("user", phoneNumber);
+  //     return httpService.postFormAsync(optInUrl, body, OptInResponse.class);
+  // }
 
   private Map<String, Object> convertToMap(QueryParams queryParams) {
     Map<String, Object> map =
@@ -330,6 +349,7 @@ public class DefaultGupshupClient implements GupshupClient {
   }
 
   public static class Builder {
+
     private String appId;
     private String apiKey;
     private HttpClient httpClient;

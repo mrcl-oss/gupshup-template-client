@@ -15,14 +15,12 @@ import io.github.mrcloss.gupshup.domain.template.TextTemplate;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GupshupTemplateDetails;
-import io.github.mrcloss.gupshup.infrastructure.dto.response.OptInResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.UploadMediaResponse;
 import io.github.mrcloss.gupshup.infrastructure.http.GupshupHttpService;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -359,58 +357,5 @@ class GupshupClientTest {
             eq("https://api.gupshup.io/wa/test-app-id/wa/media/v2"),
             eq(tempFile2),
             eq(UploadMediaResponse.class));
-  }
-
-  @Test
-  void testOptIn() {
-    // Arrange
-    String appName = "test-app";
-    String phoneNumber = "919876543210";
-    OptInResponse expectedResponse = new OptInResponse();
-    expectedResponse.setStatus("success");
-
-    when(httpService.postForm(
-            eq("https://api.gupshup.io/wa/api/v1/optedin/test-app"),
-            eq(Map.of("user", phoneNumber)),
-            eq(OptInResponse.class)))
-        .thenReturn(expectedResponse);
-
-    // Act
-    OptInResponse response = client.optIn(appName, phoneNumber);
-
-    // Assert
-    assertEquals("success", response.getStatus());
-    verify(httpService)
-        .postForm(
-            eq("https://api.gupshup.io/wa/api/v1/optedin/test-app"),
-            eq(Map.of("user", phoneNumber)),
-            eq(OptInResponse.class));
-  }
-
-  @Test
-  void testOptInAsync() throws Exception {
-    // Arrange
-    String appName = "test-app";
-    String phoneNumber = "919876543210";
-    OptInResponse expectedResponse = new OptInResponse();
-    expectedResponse.setStatus("success");
-
-    when(httpService.postFormAsync(
-            eq("https://api.gupshup.io/wa/api/v1/optedin/test-app"),
-            eq(Map.of("user", phoneNumber)),
-            eq(OptInResponse.class)))
-        .thenReturn(CompletableFuture.completedFuture(expectedResponse));
-
-    // Act
-    CompletableFuture<OptInResponse> future = client.optInAsync(appName, phoneNumber);
-    OptInResponse response = future.get();
-
-    // Assert
-    assertEquals("success", response.getStatus());
-    verify(httpService)
-        .postFormAsync(
-            eq("https://api.gupshup.io/wa/api/v1/optedin/test-app"),
-            eq(Map.of("user", phoneNumber)),
-            eq(OptInResponse.class));
   }
 }

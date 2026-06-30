@@ -1,4 +1,4 @@
-package io.github.mrcloss.gupshup.infrastructure.dto.request;
+package io.github.mrcloss.gupshup.infrastructure.dto.request.send;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -28,17 +28,56 @@ public class SendTemplateRequest {
 
   @JsonIgnore private String templateId;
 
-  @JsonIgnore private List<String> params;
+  @JsonIgnore private List<String> headerParams;
+  @JsonIgnore private List<String> params; // Represents body parameters
+  @JsonIgnore private List<String> buttonParams;
 
   @JsonIgnore private Mpm mpm;
 
   private GupshupMessage message;
 
+  /**
+   * Merges header parameters, body parameters (params), and button parameters in that order.
+   *
+   * @return the combined list of parameters for the template
+   */
+  public List<String> getFinalParams() {
+    List<String> finalParams = new ArrayList<>();
+    if (this.headerParams != null) {
+      finalParams.addAll(this.headerParams);
+    }
+    if (this.params != null) {
+      finalParams.addAll(this.params);
+    }
+    if (this.buttonParams != null) {
+      finalParams.addAll(this.buttonParams);
+    }
+    return finalParams;
+  }
+
+  /**
+   * Gets the body parameters (alias for params).
+   *
+   * @return the body parameters list
+   */
+  public List<String> getBodyParams() {
+    return this.params;
+  }
+
+  /**
+   * Sets the body parameters (alias for params).
+   *
+   * @param bodyParams the body parameters list
+   */
+  public void setBodyParams(List<String> bodyParams) {
+    this.params = bodyParams;
+  }
+
   @JsonProperty("template")
   public Map<String, Object> getNestedTemplateData() {
     Map<String, Object> templateObj = new HashMap<>();
     templateObj.put("id", this.templateId);
-    templateObj.put("params", this.params != null ? this.params : Collections.emptyList());
+    templateObj.put("params", getFinalParams());
     if (this.mpm != null) {
       templateObj.put("mpm", this.mpm);
     }
@@ -73,6 +112,65 @@ public class SendTemplateRequest {
       List<String> params,
       Mpm mpm) {
     this(source, destination, srcName, templateId, params, (GupshupMessage) null);
+    this.mpm = mpm;
+  }
+
+  public SendTemplateRequest(
+      String source,
+      String destination,
+      String srcName,
+      String templateId,
+      List<String> headerParams,
+      List<String> bodyParams,
+      List<String> buttonParams,
+      GupshupMessage message) {
+    this.source = source;
+    this.destination = destination;
+    this.srcName = srcName;
+    this.templateId = templateId;
+    this.headerParams = headerParams;
+    this.params = bodyParams;
+    this.buttonParams = buttonParams;
+    this.message = message;
+  }
+
+  public SendTemplateRequest(
+      String source,
+      String destination,
+      String srcName,
+      String templateId,
+      List<String> headerParams,
+      List<String> bodyParams,
+      List<String> buttonParams) {
+    this(
+        source,
+        destination,
+        srcName,
+        templateId,
+        headerParams,
+        bodyParams,
+        buttonParams,
+        (GupshupMessage) null);
+  }
+
+  public SendTemplateRequest(
+      String source,
+      String destination,
+      String srcName,
+      String templateId,
+      List<String> headerParams,
+      List<String> bodyParams,
+      List<String> buttonParams,
+      Mpm mpm) {
+    this(
+        source,
+        destination,
+        srcName,
+        templateId,
+        headerParams,
+        bodyParams,
+        buttonParams,
+        (GupshupMessage) null);
     this.mpm = mpm;
   }
 

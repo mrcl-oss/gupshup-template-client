@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class DocumentPayload extends GupshupMessage {
+public class DocumentPayload extends MediaPayload {
 
   private final DocumentWraper document;
 

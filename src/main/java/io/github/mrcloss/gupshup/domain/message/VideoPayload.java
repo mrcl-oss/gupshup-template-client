@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class VideoPayload extends GupshupMessage {
+public class VideoPayload extends MediaPayload {
   private final VideoWrapper video;
 
   public VideoPayload(String link, String id) {

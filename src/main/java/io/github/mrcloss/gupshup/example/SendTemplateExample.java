@@ -3,7 +3,7 @@ package io.github.mrcloss.gupshup.example;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.mrcloss.gupshup.client.GupshupClient;
 import io.github.mrcloss.gupshup.domain.message.ImagePayload;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.SendTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
 import java.util.ArrayList;
 import java.util.List;

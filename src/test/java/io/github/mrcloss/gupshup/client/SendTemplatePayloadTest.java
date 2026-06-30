@@ -3,10 +3,14 @@ package io.github.mrcloss.gupshup.client;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.mrcloss.gupshup.domain.message.GifPayload;
 import io.github.mrcloss.gupshup.domain.message.LocationPayload;
 import io.github.mrcloss.gupshup.domain.message.Mpm;
 import io.github.mrcloss.gupshup.domain.message.TextPayload;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.SendTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendAuthenticationTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendGifTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendLocationTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendTemplateRequest;
 import java.util.Arrays;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
@@ -88,5 +92,116 @@ class SendTemplatePayloadTest {
     assertTrue(
         multipleJson.contains(
             "\"postbackTexts\":[{\"index\":0,\"text\":\"payload1\"},{\"index\":1,\"text\":\"payload2\"}]"));
+  }
+
+  @Test
+  void testLocationPayloadWithoutPostbacksSerialization() throws Exception {
+    LocationPayload locationMessage =
+        new LocationPayload(42.5950661, -79.0896492, "1513  Farnum Road", "New York 10019");
+    String json = objectMapper.writeValueAsString(locationMessage);
+
+    assertTrue(json.contains("\"type\":\"location\""));
+    assertTrue(json.contains("\"location\":"));
+    assertTrue(json.contains("\"name\":\"1513  Farnum Road\""));
+    assertTrue(json.contains("\"address\":\"New York 10019\""));
+    assertTrue(json.contains("\"latitude\":42.5950661"));
+    assertTrue(json.contains("\"longitude\":-79.0896492"));
+    assertFalse(json.contains("postbackTexts"));
+  }
+
+  @Test
+  void testSendTemplateRequestWithHeaderParamsAndButtonParams() throws Exception {
+    SendTemplateRequest request =
+        new SendTemplateRequest(
+            "src",
+            "dest",
+            "appName",
+            "template-id",
+            Arrays.asList("headerVal"),
+            Arrays.asList("bodyVal1", "bodyVal2"),
+            Arrays.asList("buttonVal"));
+
+    assertEquals(4, request.getFinalParams().size());
+    assertEquals("headerVal", request.getFinalParams().get(0));
+    assertEquals("bodyVal1", request.getFinalParams().get(1));
+    assertEquals("bodyVal2", request.getFinalParams().get(2));
+    assertEquals("buttonVal", request.getFinalParams().get(3));
+
+    String json = objectMapper.writeValueAsString(request);
+    assertTrue(json.contains("\"params\":[\"headerVal\",\"bodyVal1\",\"bodyVal2\",\"buttonVal\"]"));
+  }
+
+  @Test
+  void testSendLocationTemplateRequestSubclass() throws Exception {
+    SendLocationTemplateRequest request =
+        new SendLocationTemplateRequest(
+            "src",
+            "dest",
+            "appName",
+            "template-id",
+            Arrays.asList("bodyVal"),
+            Arrays.asList("buttonVal"),
+            42.5950661,
+            -79.0896492,
+            "1513  Farnum Road",
+            "New York 10019");
+
+    assertEquals(2, request.getFinalParams().size());
+    assertEquals("bodyVal", request.getFinalParams().get(0));
+    assertEquals("buttonVal", request.getFinalParams().get(1));
+
+    assertNotNull(request.getMessage());
+    assertTrue(request.getMessage() instanceof LocationPayload);
+    LocationPayload loc = (LocationPayload) request.getMessage();
+    assertEquals("1513  Farnum Road", loc.getLocation().getName());
+    assertEquals("New York 10019", loc.getLocation().getAddress());
+
+    String json = objectMapper.writeValueAsString(request);
+    assertTrue(json.contains("\"type\":\"location\""));
+  }
+
+  @Test
+  void testSendAuthenticationTemplateRequestSerialization() throws Exception {
+    SendAuthenticationTemplateRequest request =
+        new SendAuthenticationTemplateRequest(
+            "34977900141",
+            "34689395507",
+            "PruebasManhattan",
+            "9f8755b1-05a9-4443-ac68-80e5b749e96c",
+            "123456");
+
+    assertEquals(2, request.getFinalParams().size());
+    assertEquals("123456", request.getFinalParams().get(0));
+    assertEquals("123456", request.getFinalParams().get(1));
+    assertNull(request.getMessage());
+
+    String json = objectMapper.writeValueAsString(request);
+    assertTrue(json.contains("\"template\":{"));
+    assertTrue(json.contains("\"id\":\"9f8755b1-05a9-4443-ac68-80e5b749e96c\""));
+    assertTrue(json.contains("\"params\":[\"123456\",\"123456\"]"));
+    assertFalse(json.contains("\"message\""));
+  }
+
+  @Test
+  void testSendGifTemplateRequestSerialization() throws Exception {
+    GifPayload gifPayload = new GifPayload("https://example.com/animation.gif", null);
+    SendGifTemplateRequest request =
+        new SendGifTemplateRequest(
+            "34977900141",
+            "34689395507",
+            "PruebasManhattan",
+            "gif-template-id",
+            Arrays.asList("bodyVal"),
+            gifPayload);
+
+    assertEquals(1, request.getFinalParams().size());
+    assertEquals("bodyVal", request.getFinalParams().get(0));
+    assertNotNull(request.getMessage());
+    assertTrue(request.getMessage() instanceof GifPayload);
+
+    String json = objectMapper.writeValueAsString(request);
+    assertTrue(json.contains("\"type\":\"gif\""));
+    assertTrue(json.contains("\"gif\":{"));
+    assertTrue(json.contains("\"link\":\"https://example.com/animation.gif\""));
   }
 }

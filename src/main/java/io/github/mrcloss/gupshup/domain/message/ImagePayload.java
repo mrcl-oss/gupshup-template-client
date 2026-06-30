@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-public class ImagePayload extends GupshupMessage {
+public class ImagePayload extends MediaPayload {
 
   private final ImageWrapper image;
 

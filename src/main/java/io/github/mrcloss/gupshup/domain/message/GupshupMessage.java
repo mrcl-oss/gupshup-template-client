@@ -14,7 +14,7 @@ import lombok.ToString;
   @JsonSubTypes.Type(value = VideoPayload.class, name = "video"),
   @JsonSubTypes.Type(value = DocumentPayload.class, name = "document"),
   @JsonSubTypes.Type(value = TextPayload.class, name = "text"),
-  @JsonSubTypes.Type(value = VideoPayload.class, name = "gif")
+  @JsonSubTypes.Type(value = GifPayload.class, name = "gif")
 })
 @ToString
 public abstract class GupshupMessage {
