@@ -101,7 +101,7 @@ Send messages by mapping parameters and header/body payloads:
 
 ```java
 import io.github.mrcloss.gupshup.domain.message.ImagePayload;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.SendTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
 import java.util.List;
 
@@ -115,6 +115,51 @@ SendTemplateRequest request = new SendTemplateRequest(
         "template-namespace-uuid",          // Template namespace
         List.of("John"),                    // Parameters for placeholders
         imagePayload                        // Media payload (or null if text-only)
+);
+
+SendTemplateResponse response = client.sendTemplate(request);
+System.out.println("Message ID: " + response.getMessageId());
+```
+
+### 4. Send an Authentication (OTP) Template
+
+To send an OTP verification code, use the specialized `SendAuthenticationTemplateRequest` class. This class automatically maps the authentication code to both the template body and the copy-code button:
+
+```java
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendAuthenticationTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
+
+SendAuthenticationTemplateRequest request = new SendAuthenticationTemplateRequest(
+        "34977900141",                      // Sender phone number
+        "34689395507",                      // Destination phone number
+        "PruebasManhattan",                 // App name
+        "9f8755b1-05a9-4443-ac68-80e5b749e96c", // Template ID
+        "123456"                            // Verification code
+);
+
+SendTemplateResponse response = client.sendTemplate(request);
+System.out.println("Message ID: " + response.getMessageId());
+```
+
+### 5. Send a GIF Template
+
+You can send looping GIF animations (represented as `.mp4` loop videos by WhatsApp) using the specialized `SendGifTemplateRequest` and `GifPayload`:
+
+```java
+import io.github.mrcloss.gupshup.domain.message.GifPayload;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendGifTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
+import java.util.List;
+
+GifPayload gifPayload = new GifPayload("https://example.com/animation.gif", null);
+
+SendGifTemplateRequest request = new SendGifTemplateRequest(
+        "34977900141",                      // Sender phone number
+        "34689395507",                      // Destination phone number
+        "PruebasManhattan",                 // App name
+        "gif-template-uuid",                // Template ID
+        List.of("bodyParameter"),           // Parameters for body
+        gifPayload                          // GIF payload
 );
 
 SendTemplateResponse response = client.sendTemplate(request);
