@@ -405,17 +405,6 @@ public class DefaultGupshupClient implements GupshupClient {
     }
 
     /**
-     * Sets the ZoneOffset to adjust template timestamps.
-     *
-     * @param offset the target timezone ZoneOffset
-     * @return this Builder instance
-     */
-    public Builder utc(ZoneOffset offset) {
-      this.zoneId = offset;
-      return this;
-    }
-
-    /**
      * Sets the UTC offset as a string to adjust template timestamps. Supports formats like
      * "+02:00", "-05:00", "2", "-5", "Europe/Madrid", "UTC".
      *
