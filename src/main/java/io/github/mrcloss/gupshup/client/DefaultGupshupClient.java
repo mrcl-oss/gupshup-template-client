@@ -429,8 +429,12 @@ public class DefaultGupshupClient implements GupshupClient {
       }
       String trimmed = utcOffset.trim();
       if (trimmed.matches("^[+-]?\\d+$")) {
-        int hours = Integer.parseInt(trimmed);
-        this.zoneId = ZoneOffset.ofHours(hours);
+        try {
+          int hours = Integer.parseInt(trimmed);
+          this.zoneId = ZoneOffset.ofHours(hours);
+        } catch (NumberFormatException ex) {
+          throw new IllegalArgumentException("Invalid UTC offset hours: " + trimmed, ex);
+        }
       } else if (trimmed.startsWith("+") || trimmed.startsWith("-")) {
         this.zoneId = ZoneOffset.of(trimmed);
       } else {
