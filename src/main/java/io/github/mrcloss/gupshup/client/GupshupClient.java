@@ -115,7 +115,7 @@ public interface GupshupClient {
    */
   SendTemplateResponse sendTemplate(SendTemplateRequest request);
 
-  /**
+  /*
    * Marks a user as opted-in to receive WhatsApp messages.
    *
    * @param appName the registered Gupshup app name
@@ -124,7 +124,7 @@ public interface GupshupClient {
    */
   // OptInResponse optIn(String appName, String phoneNumber);
 
-  /**
+  /*
    * Asynchronously marks a user as opted-in to receive WhatsApp messages.
    *
    * @param appName the registered Gupshup app name
