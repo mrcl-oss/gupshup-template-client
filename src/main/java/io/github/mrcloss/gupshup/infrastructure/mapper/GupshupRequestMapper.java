@@ -11,6 +11,7 @@ import io.github.mrcloss.gupshup.domain.button.PhoneNumberButton;
 import io.github.mrcloss.gupshup.domain.button.QuickReplyButton;
 import io.github.mrcloss.gupshup.domain.button.StaticUrlButton;
 import io.github.mrcloss.gupshup.domain.button.UrlButton;
+import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import io.github.mrcloss.gupshup.domain.template.AuthenticationTemplate;
 import io.github.mrcloss.gupshup.domain.template.CarouselCard;
 import io.github.mrcloss.gupshup.domain.template.CarouselTemplate;
@@ -60,10 +61,16 @@ public class GupshupRequestMapper {
     request.setElementName(template.getElementName());
     request.setLanguageCode(template.getLanguageCode());
     request.setParameterFormat(template.getParameterFormat());
-    request.setTemplateType(template.getTemplateType());
+    if (template.getCategory()
+        == io.github.mrcloss.gupshup.domain.enums.TemplateCategory.AUTHENTICATION) {
+      request.setTemplateType(TemplateType.TEXT);
+    } else {
+      request.setTemplateType(template.getTemplateType());
+    }
     request.setFooter(template.getFooter());
     request.setMessageValidity(template.getMessageValidity());
     request.setLtoAttributes(template.getLtoAttributes());
+    request.setReason(template.getReason());
 
     if (template.getTags() != null) {
       request.setVertical(String.join(",", template.getTags()));
@@ -74,7 +81,17 @@ public class GupshupRequestMapper {
     if (template.getButtons() != null) {
       request.setButtons(
           template.getButtons().stream()
-              .map(GupshupRequestMapper::mapButton)
+              .map(
+                  btn -> {
+                    if (template instanceof AuthenticationTemplate
+                        && btn instanceof CopyCodeButton) {
+                      OTPButtonRequest otpReq = new OTPButtonRequest();
+                      otpReq.setType(io.github.mrcloss.gupshup.domain.enums.ButtonType.OTP);
+                      otpReq.setOtpType("COPY_CODE");
+                      return otpReq;
+                    }
+                    return mapButton(btn);
+                  })
               .collect(Collectors.toList()));
     }
 
@@ -95,6 +112,14 @@ public class GupshupRequestMapper {
                 .map(GupshupRequestMapper::mapCard)
                 .collect(Collectors.toList()));
       }
+    }
+
+    if (template instanceof ProductTemplate) {
+      ProductTemplate productTemplate = (ProductTemplate) template;
+      ProductTemplateRequest productRequest = (ProductTemplateRequest) request;
+      productRequest.setHeader(productTemplate.getHeader());
+      productRequest.setExampleHeader(
+          formatExample(productTemplate.getHeader(), productTemplate.getVariableHeaderExamples()));
     }
 
     if (template instanceof MediaTemplate) {
@@ -143,10 +168,13 @@ public class GupshupRequestMapper {
 
   private static CarouselCardRequest mapCard(CarouselCard card) {
     CarouselCardRequest request = new CarouselCardRequest();
-    request.setContent(card.getBody());
+    request.setBody(card.getBody());
     request.setMediaId(card.getMediaId());
     request.setMediaUrl(card.getMediaUrl());
     request.setSampleText(formatExample(card.getBody(), card.getVariableExamples()));
+    if (card.getHeaderType() != null) {
+      request.setHeaderType(card.getHeaderType().name());
+    }
     if (card.getButtons() != null) {
       request.setButtons(
           card.getButtons().stream()

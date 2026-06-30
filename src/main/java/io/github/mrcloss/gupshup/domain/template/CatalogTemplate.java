@@ -9,7 +9,9 @@ import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a WhatsApp Catalog template.
@@ -20,6 +22,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class CatalogTemplate extends Template {
   /**
    * Constructs a new CatalogTemplate without variable examples.

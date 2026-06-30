@@ -59,6 +59,7 @@ class GupshupRequestMapperTest {
 
     assertEquals("News from {{1}}!", textRequest.getHeader());
     assertEquals("News from [Gupshup]!", textRequest.getExampleHeader());
+    assertNull(textRequest.getReason());
 
     assertEquals(3, textRequest.getButtons().size());
 
@@ -89,17 +90,21 @@ class GupshupRequestMapperTest {
             TemplateParameterFormat.POSITIONAL);
     template.setVariableExamples(Collections.singletonList("123456"));
     template.setAddSecurityRecommendation(true);
+    template.setReason("Template rejection reason");
 
     TemplateRequest request = GupshupRequestMapper.map(template);
 
     assertTrue(request instanceof AuthenticationTemplateRequest);
     assertEquals(
-        "Your code is {{1}}. For your security, do not share this code.", request.getContent());
+        "{{1}} is your verification code. For your security, do not share this code.",
+        request.getContent());
     assertEquals(
-        "Your code is [123456]. For your security, do not share this code.", request.getExample());
+        "[123456] is your verification code. For your security, do not share this code.",
+        request.getExample());
+    assertEquals("Template rejection reason", request.getReason());
     assertEquals(1, request.getButtons().size());
-    assertTrue(request.getButtons().get(0) instanceof CopyCodeButtonRequest);
-    assertEquals("123456", ((CopyCodeButtonRequest) request.getButtons().get(0)).getExample());
+    assertTrue(request.getButtons().get(0) instanceof OTPButtonRequest);
+    assertEquals("COPY_CODE", ((OTPButtonRequest) request.getButtons().get(0)).getOtpType());
   }
 
   @Test
@@ -128,7 +133,8 @@ class GupshupRequestMapperTest {
     assertTrue(request instanceof CarouselTemplateRequest);
     CarouselTemplateRequest carouselRequest = (CarouselTemplateRequest) request;
     assertEquals(1, carouselRequest.getCards().size());
-    assertEquals("Card body {{1}}!", carouselRequest.getCards().get(0).getContent());
+    assertEquals("Card body {{1}}!", carouselRequest.getCards().get(0).getBody());
     assertEquals("Card body [Value]!", carouselRequest.getCards().get(0).getSampleText());
+    assertEquals("IMAGE", carouselRequest.getCards().get(0).getHeaderType());
   }
 }

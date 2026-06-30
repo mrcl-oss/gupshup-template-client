@@ -1,6 +1,8 @@
 package io.github.mrcloss.gupshup.domain.template;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.mrcloss.gupshup.domain.button.PhoneNumberButton;
 import io.github.mrcloss.gupshup.domain.button.StaticUrlButton;
@@ -185,5 +187,69 @@ public class TemplateTest {
 
     template.setBody("Hello {{1}} and {{2}}!");
     template.validate(); // Should pass
+  }
+
+  @Test
+  public void shouldIdentifyIfMediaIsRequired() {
+    Template textTemplate = createBaseTemplate();
+    assertFalse(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.IMAGE);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.VIDEO);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.DOCUMENT);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.GIF);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.CAROUSEL);
+    assertTrue(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.LOCATION);
+    assertFalse(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.CATALOG);
+    assertFalse(textTemplate.isMediaRequired());
+
+    textTemplate.setTemplateType(TemplateType.PRODUCT);
+    assertFalse(textTemplate.isMediaRequired());
+  }
+
+  @Test
+  public void shouldDefaultMessageValidityToNull() {
+    Template template = createBaseTemplate();
+    org.junit.jupiter.api.Assertions.assertNull(template.getMessageValidity());
+  }
+
+  @Test
+  public void shouldNotAllowInvalidMessageValidityInSetter() {
+    Template template = createBaseTemplate();
+    assertThrows(IllegalArgumentException.class, () -> template.setMessageValidity(0));
+    assertThrows(IllegalArgumentException.class, () -> template.setMessageValidity(43199));
+    assertThrows(IllegalArgumentException.class, () -> template.setMessageValidity(2592001));
+    template.setMessageValidity(43200); // Should pass
+    template.setMessageValidity(2592000); // Should pass
+    template.setMessageValidity(null); // Should pass
+  }
+
+  @Test
+  public void shouldNotAllowMessageValidityForNonMarketingTemplates() {
+    Template template = createBaseTemplate();
+    template.setMessageValidity(50000);
+    template.setCategory(TemplateCategory.UTILITY);
+    assertThrows(IllegalStateException.class, template::validate);
+  }
+
+  @Test
+  public void shouldHandleNullButtonsSafely() {
+    Template template = createBaseTemplate();
+    org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> template.setButtons(null));
+    org.junit.jupiter.api.Assertions.assertNotNull(template.getButtons());
+    assertTrue(template.getButtons().isEmpty());
+    org.junit.jupiter.api.Assertions.assertDoesNotThrow(template::validate);
   }
 }

@@ -1,9 +1,11 @@
 package io.github.mrcloss.gupshup.domain.message;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
-public class ImagePayload extends GupshupMessage {
+@ToString(callSuper = true)
+public class ImagePayload extends MediaPayload {
 
   private final ImageWrapper image;
 
@@ -14,6 +16,7 @@ public class ImagePayload extends GupshupMessage {
   }
 
   @Getter
+  @ToString
   public static class ImageWrapper {
     private final String link;
     private final String id;

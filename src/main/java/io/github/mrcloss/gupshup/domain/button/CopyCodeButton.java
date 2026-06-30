@@ -4,9 +4,11 @@ import io.github.mrcloss.gupshup.domain.enums.ButtonType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class CopyCodeButton extends Button {
   @Setter(AccessLevel.NONE)
   private String exampleValue;
@@ -34,7 +36,9 @@ public class CopyCodeButton extends Button {
 
   @Override
   public void validate() {
-    validateText(getText());
+    if (getText() != null && !getText().trim().isEmpty()) {
+      validateText(getText());
+    }
     if (exampleValue == null || exampleValue.trim().isEmpty()) {
       throw new IllegalStateException("Example value is required for copy code button");
     }

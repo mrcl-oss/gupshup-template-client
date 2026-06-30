@@ -2,10 +2,12 @@ package io.github.mrcloss.gupshup.domain.message;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-public class DocumentPayload extends GupshupMessage {
+@ToString(callSuper = true)
+public class DocumentPayload extends MediaPayload {
 
   private final DocumentWraper document;
 
@@ -15,6 +17,7 @@ public class DocumentPayload extends GupshupMessage {
   }
 
   @Getter
+  @ToString
   public static class DocumentWraper {
 
     private final String link;

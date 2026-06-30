@@ -5,11 +5,14 @@ import io.github.mrcloss.gupshup.domain.button.CopyCodeButton;
 import io.github.mrcloss.gupshup.domain.enums.LanguageCode;
 import io.github.mrcloss.gupshup.domain.enums.TemplateCategory;
 import io.github.mrcloss.gupshup.domain.enums.TemplateParameterFormat;
+import io.github.mrcloss.gupshup.domain.enums.TemplateType;
 import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a specialized WhatsApp template for sending One-Time Passwords (OTPs) or verification
@@ -21,6 +24,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class AuthenticationTemplate extends TextTemplate {
   @Setter(AccessLevel.NONE)
   private boolean addSecurityRecommendation;
@@ -59,13 +64,14 @@ public class AuthenticationTemplate extends TextTemplate {
     super(
         elementName,
         languageCode,
-        body,
-        variableExamples,
+        "{{1}} is your verification code.",
+        Collections.singletonList("123456"),
         TemplateCategory.AUTHENTICATION,
         appId,
         tags,
         parameterFormat);
     updateButton();
+    updateFooter();
   }
 
   public void setAddSecurityRecommendation(boolean addSecurityRecommendation) {
@@ -77,8 +83,13 @@ public class AuthenticationTemplate extends TextTemplate {
 
   @Override
   public void setBody(String body) {
-    super.setBody(body);
+    super.setBody("{{1}} is your verification code.");
     updateBodyWithRecommendation();
+  }
+
+  @Override
+  public void setVariableExamples(List<String> variableExamples) {
+    super.setVariableExamples(Collections.singletonList("123456"));
   }
 
   private void updateBodyWithRecommendation() {
@@ -100,21 +111,37 @@ public class AuthenticationTemplate extends TextTemplate {
   }
 
   public void setCodeExpirationMinutes(int codeExpirationMinutes) {
-    if (codeExpirationMinutes < 0) {
-      throw new IllegalArgumentException("Code expiration minutes cannot be negative");
+    if (codeExpirationMinutes < 0 || codeExpirationMinutes > 90) {
+      throw new IllegalArgumentException(
+          "Code expiration minutes must be between 1 and 90 (or 0 for no expiration)");
     }
     this.codeExpirationMinutes = codeExpirationMinutes;
     updateButton();
+    updateFooter();
+  }
+
+  private void updateFooter() {
+    if (codeExpirationMinutes > 0) {
+      String suffix = (codeExpirationMinutes == 1) ? " minute" : " minutes";
+      super.setFooter("This code expires in " + codeExpirationMinutes + suffix);
+    } else {
+      super.setFooter(null);
+    }
   }
 
   private void updateButton() {
-    String text =
-        (codeExpirationMinutes > 0)
-            ? "This code expires in {{codeExpirationMinutes}} minutes"
-            : "Copy code";
+    String text = "Copy code";
 
     // We bypass the restriction by calling super
     super.setButtons(Collections.singletonList(new CopyCodeButton(text, "123456")));
+  }
+
+  @Override
+  public void setTemplateType(TemplateType templateType) {
+    if (templateType != TemplateType.TEXT) {
+      throw new IllegalArgumentException("Authentication templates must always be of type TEXT");
+    }
+    super.setTemplateType(templateType);
   }
 
   @Override
@@ -124,6 +151,27 @@ public class AuthenticationTemplate extends TextTemplate {
           "Authentication template only allowed for AUTHENTICATION category");
     }
     super.setCategory(category);
+  }
+
+  @Override
+  public void setHeader(String header) {
+    if (header != null && !header.trim().isEmpty()) {
+      throw new IllegalArgumentException("Authentication templates cannot have a header");
+    }
+    super.setHeader(header);
+  }
+
+  @Override
+  public void setFooter(String footer) {
+    updateFooter();
+  }
+
+  @Override
+  public void validate() {
+    super.validate();
+    if (getHeader() != null && !getHeader().trim().isEmpty()) {
+      throw new IllegalStateException("Authentication templates cannot have a header");
+    }
   }
 
   @Override

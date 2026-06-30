@@ -10,7 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a text-only WhatsApp template.
@@ -20,6 +22,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class TextTemplate extends Template {
   @Setter(AccessLevel.NONE)
   private String header;
@@ -202,5 +206,25 @@ public class TextTemplate extends Template {
         }
       }
     }
+  }
+
+  /**
+   * Returns the template header with the example header variables filled.
+   *
+   * @return the header with example variables replaced, or the raw header if no header/examples
+   *     exist
+   */
+  public String getFilledHeader() {
+    return fillVariables(this.header, this.variableHeaderExamples);
+  }
+
+  /**
+   * Returns the template header with the provided custom variables filled.
+   *
+   * @param variables the list of custom variable values
+   * @return the header with custom variables replaced, or the raw header if the list is empty/null
+   */
+  public String getFilledHeader(List<String> variables) {
+    return fillVariables(this.header, variables);
   }
 }

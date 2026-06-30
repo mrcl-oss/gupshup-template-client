@@ -56,8 +56,8 @@ class GupshupResponseMapperTest {
     gt.setParameterFormat("POSITIONAL");
     gt.setStatus("APPROVED");
     gt.setReason("Approved automatically");
-    gt.setCreatedOn(1687164143000L); // Milliseconds
-    gt.setModifiedOn(1687164200L); // Seconds
+    gt.setCreatedOn(Instant.ofEpochMilli(1687164143000L)); // Milliseconds
+    gt.setModifiedOn(Instant.ofEpochSecond(1687164200L)); // Seconds
 
     // Build the stringified JSON data
     String jsonData =
@@ -161,14 +161,14 @@ class GupshupResponseMapperTest {
   void testMapGIFTemplate() {
     GupshupTemplateDetails gt = new GupshupTemplateDetails();
     gt.setTemplateType("GIF");
-    gt.setData("{\"body\":\"Funny GIF.\",\"mediaUrl\":\"https://example.com/gif.gif\"}");
+    gt.setData("{\"body\":\"Funny GIF.\",\"mediaUrl\":\"https://example.com/gif.mp4\"}");
 
     Template result = GupshupResponseMapper.map(gt);
 
     assertTrue(result instanceof GIFTemplate);
     GIFTemplate gifTemplate = (GIFTemplate) result;
     assertEquals("Funny GIF.", gifTemplate.getBody());
-    assertEquals("https://example.com/gif.gif", gifTemplate.getMediaUrl());
+    assertEquals("https://example.com/gif.mp4", gifTemplate.getMediaUrl());
   }
 
   @Test
@@ -227,13 +227,11 @@ class GupshupResponseMapperTest {
     assertTrue(authTemplate.isAddSecurityRecommendation());
     assertEquals(5, authTemplate.getCodeExpirationMinutes());
     assertEquals(
-        "Your verification code is {{1}}. For your security, do not share this code.",
+        "{{1}} is your verification code. For your security, do not share this code.",
         authTemplate.getBody());
     assertEquals(1, authTemplate.getButtons().size());
     assertTrue(authTemplate.getButtons().get(0) instanceof CopyCodeButton);
-    assertEquals(
-        "This code expires in {{codeExpirationMinutes}} minutes",
-        authTemplate.getButtons().get(0).getText());
+    assertEquals("Copy code", authTemplate.getButtons().get(0).getText());
   }
 
   @Test
@@ -352,5 +350,107 @@ class GupshupResponseMapperTest {
     assertTrue(result.getLtoAttributes().isLTO());
     assertTrue(result.getLtoAttributes().isHasExpiration());
     assertEquals("Offer ends soon!", result.getLtoAttributes().getLimitedOfferText());
+  }
+
+  @Test
+  void testMapWithContainerMeta() {
+    GupshupTemplateDetails gt = new GupshupTemplateDetails();
+    gt.setAppId("7ad73d28-4347-4f32-a212-1bdc571d183b");
+    gt.setTemplateType("TEXT");
+    gt.setCategory("MARKETING");
+    gt.setElementName("pruebaborrar");
+    gt.setLanguageCode("es");
+    gt.setData(
+        "Prueba {{1}} a aaa \n"
+            + "Esto es el cuerpo {{1}} a\n"
+            + "Esto es el pie | [boton1] | [boton2,https://example.com{{1}}]");
+    gt.setContainerMeta(
+        "{\"appId\":\"7ad73d28-4347-4f32-a212-1bdc571d183b\",\"data\":\"Esto es el cuerpo {{1}}"
+            + " a\",\"buttons\":[{\"type\":\"QUICK_REPLY\",\"text\":\"boton1\"},"
+            + "{\"type\":\"URL\",\"text\":\"boton2\",\"url\":\"https://example.com{{1}}\",\"example\":[\"https://example.com/hola\"]}],\"header\":\"Prueba"
+            + " {{1}} a aaa \",\"footer\":\"Esto es el pie\",\"sampleText\":\"Esto es el cuerpo"
+            + " [adios] a\",\"sampleHeader\":\"Prueba [hola] a aaa \",\"enableSample\":true}");
+
+    Template result = GupshupResponseMapper.map(gt);
+
+    assertTrue(result instanceof TextTemplate);
+    TextTemplate textTemplate = (TextTemplate) result;
+
+    assertEquals("Esto es el cuerpo {{1}} a", textTemplate.getBody());
+    assertEquals("Prueba {{1}} a aaa ", textTemplate.getHeader());
+    assertEquals("Esto es el pie", textTemplate.getFooter());
+
+    assertEquals(Collections.singletonList("adios"), textTemplate.getVariableExamples());
+    assertEquals(Collections.singletonList("hola"), textTemplate.getVariableHeaderExamples());
+
+    List<Button> buttons = textTemplate.getButtons();
+    assertEquals(2, buttons.size());
+
+    assertTrue(buttons.get(0) instanceof QuickReplyButton);
+    assertEquals("boton1", buttons.get(0).getText());
+
+    assertTrue(buttons.get(1) instanceof DynamicUrlButton);
+    DynamicUrlButton dynBtn = (DynamicUrlButton) buttons.get(1);
+    assertEquals("boton2", dynBtn.getText());
+    assertEquals("https://example.com{{1}}", dynBtn.getUrlTemplate());
+    assertEquals("https://example.com/hola", dynBtn.getVariableExample());
+  }
+
+  @Test
+  void testMapTemplateStatus() {
+    String[] statuses = {
+      "APPROVED",
+      "PENDING",
+      "DESACTIVATED",
+      "DEACTIVATED",
+      "DISABLED",
+      "IN_REVIEW",
+      "invalid_status"
+    };
+    TemplateStatus[] expected = {
+      TemplateStatus.APPROVED,
+      TemplateStatus.PENDING,
+      TemplateStatus.DEACTIVATED,
+      TemplateStatus.DEACTIVATED,
+      TemplateStatus.DISABLED,
+      TemplateStatus.IN_REVIEW,
+      null
+    };
+
+    for (int i = 0; i < statuses.length; i++) {
+      GupshupTemplateDetails gt = new GupshupTemplateDetails();
+      gt.setAppId("app-123");
+      gt.setElementName("test_status_" + i);
+      gt.setTemplateType("TEXT");
+      gt.setCategory("MARKETING");
+      gt.setLanguageCode("en");
+      gt.setData("Hello World");
+      gt.setStatus(statuses[i]);
+
+      Template result = GupshupResponseMapper.map(gt);
+      assertEquals(expected[i], result.getStatus(), "Failed mapping for status: " + statuses[i]);
+    }
+  }
+
+  @Test
+  void testTemplateStatusJacksonDeserialization() throws Exception {
+    String jsonApproved = "\"APPROVED\"";
+    String jsonPending = "\"PENDING\"";
+    String jsonDesactivated = "\"DESACTIVATED\"";
+    String jsonDeactivated = "\"DEACTIVATED\"";
+    String jsonDisabled = "\"DISABLED\"";
+    String jsonInReview = "\"IN_REVIEW\"";
+
+    assertEquals(
+        TemplateStatus.APPROVED, objectMapper.readValue(jsonApproved, TemplateStatus.class));
+    assertEquals(TemplateStatus.PENDING, objectMapper.readValue(jsonPending, TemplateStatus.class));
+    assertEquals(
+        TemplateStatus.DEACTIVATED, objectMapper.readValue(jsonDesactivated, TemplateStatus.class));
+    assertEquals(
+        TemplateStatus.DEACTIVATED, objectMapper.readValue(jsonDeactivated, TemplateStatus.class));
+    assertEquals(
+        TemplateStatus.DISABLED, objectMapper.readValue(jsonDisabled, TemplateStatus.class));
+    assertEquals(
+        TemplateStatus.IN_REVIEW, objectMapper.readValue(jsonInReview, TemplateStatus.class));
   }
 }

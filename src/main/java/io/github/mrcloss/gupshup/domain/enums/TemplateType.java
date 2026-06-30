@@ -29,5 +29,15 @@ public enum TemplateType {
   PRODUCT,
 
   @JsonProperty("CAROUSEL")
-  CAROUSEL
+  CAROUSEL;
+
+  /**
+   * Checks if this template type requires attaching a media file (either directly or via its
+   * components).
+   *
+   * @return true if the template type requires media, false otherwise
+   */
+  public boolean isMediaRequired() {
+    return this == IMAGE || this == VIDEO || this == DOCUMENT || this == GIF || this == CAROUSEL;
+  }
 }

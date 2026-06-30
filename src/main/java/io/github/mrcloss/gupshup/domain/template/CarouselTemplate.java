@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a WhatsApp Carousel template.
@@ -20,6 +22,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class CarouselTemplate extends Template {
   @Setter(AccessLevel.NONE)
   private ArrayList<CarouselCard> cards;

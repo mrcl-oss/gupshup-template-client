@@ -3,9 +3,11 @@ package io.github.mrcloss.gupshup.domain.button;
 import io.github.mrcloss.gupshup.domain.enums.ButtonType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class OTPButton extends Button {
   public enum OTPButtonType {
     COPY_CODE
@@ -24,7 +26,9 @@ public class OTPButton extends Button {
 
   @Override
   public void validate() {
-    validateText(getText());
+    if (getText() != null && !getText().trim().isEmpty()) {
+      validateText(getText());
+    }
     if (otpType == null) {
       throw new IllegalStateException("OTP type is required");
     }

@@ -3,10 +3,12 @@ package io.github.mrcloss.gupshup.domain.template;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /** Attributes for Limited Time Offer (LTO) templates. */
 @Getter
 @Setter
+@ToString
 public class LTOAttributes {
 
   @JsonProperty("isLTO")

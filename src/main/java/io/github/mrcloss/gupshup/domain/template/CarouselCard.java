@@ -7,9 +7,11 @@ import io.github.mrcloss.gupshup.domain.button.UrlButton;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CarouselCard {
 
   public enum CarouselCardHeaderType {
@@ -22,6 +24,7 @@ public class CarouselCard {
   private List<String> variableExamples;
   private String mediaId;
   private String mediaUrl;
+  private java.io.File mediaFile;
   private CarouselCardHeaderType headerType;
 
   public CarouselCard() {}
@@ -102,5 +105,25 @@ public class CarouselCard {
       throw new IllegalArgumentException("Media URL must start with http:// or https://");
     }
     this.mediaUrl = mediaUrl;
+  }
+
+  /**
+   * Returns the carousel card body with the example variables filled.
+   *
+   * @return the body with example variables replaced, or the raw body if no variables/examples
+   *     exist
+   */
+  public String getFilledBody() {
+    return Template.fillVariables(this.body, this.variableExamples);
+  }
+
+  /**
+   * Returns the carousel card body with the provided custom variables filled.
+   *
+   * @param variables the list of custom variable values
+   * @return the body with custom variables replaced, or the raw body if the list is empty/null
+   */
+  public String getFilledBody(List<String> variables) {
+    return Template.fillVariables(this.body, variables);
   }
 }

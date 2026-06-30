@@ -2,12 +2,13 @@ package io.github.mrcloss.gupshup.client;
 
 import io.github.mrcloss.gupshup.domain.template.Template;
 import io.github.mrcloss.gupshup.infrastructure.dto.request.QueryParams;
-import io.github.mrcloss.gupshup.infrastructure.dto.request.SendTemplateRequest;
+import io.github.mrcloss.gupshup.infrastructure.dto.request.send.SendTemplateRequest;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.CreateTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.DeleteTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplateResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.GetTemplatesResponse;
 import io.github.mrcloss.gupshup.infrastructure.dto.response.SendTemplateResponse;
+import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -43,6 +44,12 @@ import java.util.concurrent.CompletableFuture;
  * }</pre>
  */
 public interface GupshupClient {
+  /**
+   * Gets the target timezone ZoneId configured for this client.
+   *
+   * @return the configured ZoneId, or null if no timezone adjustment is set
+   */
+  ZoneId getZoneId();
 
   /**
    * Retrieves all templates from Gupshup.
@@ -107,6 +114,24 @@ public interface GupshupClient {
    * @return the response containing the message ID
    */
   SendTemplateResponse sendTemplate(SendTemplateRequest request);
+
+  /*
+   * Marks a user as opted-in to receive WhatsApp messages.
+   *
+   * @param appName the registered Gupshup app name
+   * @param phoneNumber the user's phone number
+   * @return the response indicating success or failure of the opt-in
+   */
+  // OptInResponse optIn(String appName, String phoneNumber);
+
+  /*
+   * Asynchronously marks a user as opted-in to receive WhatsApp messages.
+   *
+   * @param appName the registered Gupshup app name
+   * @param phoneNumber the user's phone number
+   * @return a CompletableFuture containing the response indicating success or failure
+   */
+  // CompletableFuture<OptInResponse> optInAsync(String appName, String phoneNumber);
 
   /**
    * Creates a new builder for configuring and instantiating a GupshupClient.

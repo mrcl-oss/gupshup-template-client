@@ -1,5 +1,6 @@
 package io.github.mrcloss.gupshup.domain.template;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.github.mrcloss.gupshup.domain.button.Button;
 import io.github.mrcloss.gupshup.domain.button.CatalogButton;
@@ -18,10 +19,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 /**
  * Represents a base WhatsApp message template in the Gupshup API.
  *
@@ -35,16 +38,24 @@ public class Template {
   private String appId;
   private TemplateStatus status;
   private TemplateCategory category;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, timezone = "UTC")
   private Instant createdOn;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, timezone = "UTC")
   private Instant modifiedOn;
+
   private String body; // data / content
   private List<String> variableExamples;
   private String elementName;
   private LanguageCode languageCode;
-  private TemplateParameterFormat parameterFormat;
+  private TemplateParameterFormat parameterFormat = TemplateParameterFormat.POSITIONAL;
   private TemplateType templateType;
   private List<String> tags; // vertical
+
+  /** The rejection or error reason for this template, if any. Defaults to null. */
   private String reason;
+
   private String footer;
   private Integer messageValidity;
   private List<Button> buttons = new ArrayList<>();
@@ -109,12 +120,12 @@ public class Template {
       TemplateParameterFormat parameterFormat) {
     this.elementName = elementName;
     this.languageCode = languageCode;
+    this.category = category;
+    this.templateType = templateType;
     setBody(body);
     this.variableExamples = variableExamples;
-    this.category = category;
     this.appId = appId;
     this.tags = tags;
-    this.templateType = templateType;
     this.parameterFormat = parameterFormat;
   }
 
@@ -126,7 +137,7 @@ public class Template {
    *     variable
    */
   public void setBody(String body) {
-    if (body != null) {
+    if (body != null && category != TemplateCategory.AUTHENTICATION) {
       if (body.length() > 1024) {
         throw new IllegalArgumentException("Template body cannot exceed 1024 characters");
       }
@@ -167,7 +178,21 @@ public class Template {
       }
       validateButtons(buttons);
     }
-    this.buttons = buttons;
+    this.buttons = (buttons == null) ? new ArrayList<>() : buttons;
+  }
+
+  /**
+   * Sets the message validity duration in seconds.
+   *
+   * @param messageValidity the validity duration (between 43200 and 2592000 seconds)
+   * @throws IllegalArgumentException if the validity duration is outside the allowed range
+   */
+  public void setMessageValidity(Integer messageValidity) {
+    if (messageValidity != null && (messageValidity < 43200 || messageValidity > 2592000)) {
+      throw new IllegalArgumentException(
+          "Message validity must be between 43200 and 2592000 seconds");
+    }
+    this.messageValidity = messageValidity;
   }
 
   /**
@@ -246,7 +271,10 @@ public class Template {
     if (category == null) {
       throw new IllegalStateException("Category is required");
     }
-    if (body != null) {
+    if (category == TemplateCategory.AUTHENTICATION && templateType != TemplateType.TEXT) {
+      throw new IllegalStateException("Authentication templates must be of type TEXT");
+    }
+    if (body != null && category != TemplateCategory.AUTHENTICATION) {
       if (body.matches("^\\{\\{\\d+\\}\\}.*")) {
         throw new IllegalStateException("Template body cannot start with a variable");
       }
@@ -303,5 +331,59 @@ public class Template {
         }
       }
     }
+
+    if (messageValidity != null) {
+      if (category != TemplateCategory.MARKETING) {
+        throw new IllegalStateException(
+            "Message validity is only allowed for MARKETING category templates");
+      }
+      if (messageValidity < 43200 || messageValidity > 2592000) {
+        throw new IllegalStateException(
+            "Message validity for marketing template must be between 43200 and 2592000 seconds");
+      }
+    }
+  }
+
+  /**
+   * Checks if this template requires attaching a media file (either directly or via its
+   * components).
+   *
+   * @return true if the template requires media, false otherwise
+   */
+  public boolean isMediaRequired() {
+    return templateType != null && templateType.isMediaRequired();
+  }
+
+  /**
+   * Returns the template body with the example variables filled.
+   *
+   * @return the body with example variables replaced, or the raw body if no variables/examples
+   *     exist
+   */
+  public String getFilledBody() {
+    return fillVariables(this.body, this.variableExamples);
+  }
+
+  /**
+   * Returns the template body with the provided custom variables filled.
+   *
+   * @param variables the list of custom variable values
+   * @return the body with custom variables replaced, or the raw body if the list is empty/null
+   */
+  public String getFilledBody(List<String> variables) {
+    return fillVariables(this.body, variables);
+  }
+
+  static String fillVariables(String text, List<String> variables) {
+    if (text == null || variables == null || variables.isEmpty()) {
+      return text;
+    }
+    String result = text;
+    for (int i = 0; i < variables.size(); i++) {
+      String placeholder = "{{" + (i + 1) + "}}";
+      String value = variables.get(i) != null ? variables.get(i) : "";
+      result = result.replace(placeholder, value);
+    }
+    return result;
   }
 }

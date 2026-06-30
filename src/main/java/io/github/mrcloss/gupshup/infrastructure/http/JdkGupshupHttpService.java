@@ -12,8 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /** Implementation of GupshupHttpService using JDK's HttpClient. */
+@Slf4j
 public class JdkGupshupHttpService implements GupshupHttpService {
 
   private final String apiKey;
@@ -29,6 +31,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> T getWithParams(
       String path, Map<String, Object> queryParams, Class<T> responseType) {
+    log.info("Executing GET request to: {} with params: {}", path, queryParams);
     try {
       String finalPath = buildQueryString(path, queryParams);
 
@@ -48,6 +51,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> T postForm(
       String path, Map<String, Object> body, Class<T> responseType) {
+    log.info("Executing POST request to: {} with body: {}", path, body);
     try {
       String formBody = buildFormBody(body);
       HttpRequest request =
@@ -69,6 +73,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> CompletableFuture<T> postFormAsync(
       String path, Map<String, Object> body, Class<T> responseType) {
+    log.info("Executing async POST request to: {} with body: {}", path, body);
     try {
       String formBody = buildFormBody(body);
       HttpRequest request =
@@ -89,6 +94,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
 
   @Override
   public <T extends BaseGupshupResponse> T delete(String path, Class<T> responseType) {
+    log.info("Executing DELETE request to: {}", path);
     try {
       HttpRequest request = buildBaseRequest(path).DELETE().build();
 
@@ -105,6 +111,7 @@ public class JdkGupshupHttpService implements GupshupHttpService {
   @Override
   public <T extends BaseGupshupResponse> CompletableFuture<T> deleteAsync(
       String path, Class<T> responseType) {
+    log.info("Executing async DELETE request to: {}", path);
     try {
       HttpRequest request = buildBaseRequest(path).DELETE().build();
 
@@ -115,6 +122,101 @@ public class JdkGupshupHttpService implements GupshupHttpService {
       return CompletableFuture.failedFuture(
           new GupshupApiException(
               "Failed to start async DELETE request: " + e.getMessage(), 0, null));
+    }
+  }
+
+  @Override
+  public <T extends BaseGupshupResponse> T uploadMedia(
+      String path, java.io.File file, Class<T> responseType) {
+    log.info("Executing upload media request to: {} with file: {}", path, file.getName());
+    try {
+      String boundary = "GupshupBoundary" + System.currentTimeMillis();
+      String mimeType = java.nio.file.Files.probeContentType(file.toPath());
+      if (mimeType == null) {
+        mimeType = "application/octet-stream";
+      }
+
+      byte[] boundaryBytes = ("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] dispositionBytes =
+          ("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n")
+              .getBytes(StandardCharsets.UTF_8);
+      byte[] contentTypeBytes =
+          ("Content-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] fileBytes = java.nio.file.Files.readAllBytes(file.toPath());
+      byte[] newlineBytes = "\r\n".getBytes(StandardCharsets.UTF_8);
+      byte[] endBoundaryBytes = ("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
+
+      HttpRequest.BodyPublisher bodyPublisher =
+          HttpRequest.BodyPublishers.ofByteArrays(
+              java.util.List.of(
+                  boundaryBytes,
+                  dispositionBytes,
+                  contentTypeBytes,
+                  fileBytes,
+                  newlineBytes,
+                  endBoundaryBytes));
+
+      HttpRequest request =
+          buildBaseRequest(path)
+              .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+              .POST(bodyPublisher)
+              .build();
+
+      HttpResponse<String> response =
+          httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+      return handleResponse(response, responseType);
+    } catch (GupshupApiException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new GupshupApiException(
+          "Failed to execute upload media request: " + e.getMessage(), 0, null);
+    }
+  }
+
+  @Override
+  public <T extends BaseGupshupResponse> CompletableFuture<T> uploadMediaAsync(
+      String path, java.io.File file, Class<T> responseType) {
+    log.info("Executing async upload media request to: {} with file: {}", path, file.getName());
+    try {
+      String boundary = "GupshupBoundary" + System.currentTimeMillis();
+      String mimeType = java.nio.file.Files.probeContentType(file.toPath());
+      if (mimeType == null) {
+        mimeType = "application/octet-stream";
+      }
+
+      byte[] boundaryBytes = ("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] dispositionBytes =
+          ("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n")
+              .getBytes(StandardCharsets.UTF_8);
+      byte[] contentTypeBytes =
+          ("Content-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8);
+      byte[] fileBytes = java.nio.file.Files.readAllBytes(file.toPath());
+      byte[] newlineBytes = "\r\n".getBytes(StandardCharsets.UTF_8);
+      byte[] endBoundaryBytes = ("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
+
+      HttpRequest.BodyPublisher bodyPublisher =
+          HttpRequest.BodyPublishers.ofByteArrays(
+              java.util.List.of(
+                  boundaryBytes,
+                  dispositionBytes,
+                  contentTypeBytes,
+                  fileBytes,
+                  newlineBytes,
+                  endBoundaryBytes));
+
+      HttpRequest request =
+          buildBaseRequest(path)
+              .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+              .POST(bodyPublisher)
+              .build();
+
+      return httpClient
+          .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+          .thenApply(response -> handleResponse(response, responseType));
+    } catch (Exception e) {
+      return CompletableFuture.failedFuture(
+          new GupshupApiException(
+              "Failed to start async upload media request: " + e.getMessage(), 0, null));
     }
   }
 
@@ -184,6 +286,9 @@ public class JdkGupshupHttpService implements GupshupHttpService {
       HttpResponse<String> response, Class<T> responseType) {
     String body = response.body();
     int statusCode = response.statusCode();
+
+    log.info("[Gupshup API Response] Raw response body: {}", body);
+    System.out.println("[Gupshup API Response] Raw response body: " + body);
 
     try {
       if (body == null || body.trim().isEmpty()) {

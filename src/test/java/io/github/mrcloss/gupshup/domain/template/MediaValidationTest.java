@@ -73,7 +73,7 @@ public class MediaValidationTest {
   }
 
   @Test
-  public void gifTemplateShouldOnlyAllowGifExtensions() {
+  public void gifTemplateShouldOnlyAllowMp4Extensions() {
     GIFTemplate template =
         new GIFTemplate(
             "test_media",
@@ -83,14 +83,14 @@ public class MediaValidationTest {
             "app-123",
             null,
             TemplateParameterFormat.POSITIONAL);
-    template.setMediaUrl("https://example.com/animation.gif"); // Valid
+    template.setMediaUrl("https://example.com/animation.mp4"); // Valid
 
     assertThrows(
         IllegalArgumentException.class,
         () -> {
-          template.setMediaUrl("https://example.com/image.png");
+          template.setMediaUrl("https://example.com/animation.gif");
         },
-        "GIF template should only allow .gif files");
+        "GIF template should only allow .mp4 files");
   }
 
   @Test
@@ -110,5 +110,20 @@ public class MediaValidationTest {
           template.setMediaUrl("invalid-url");
         },
         "Media URL must be a valid URL");
+  }
+
+  @Test
+  public void imageTemplateShouldAllowPercentEncodedUrl() {
+    ImageTemplate template =
+        new ImageTemplate(
+            "test_media",
+            LanguageCode.ENGLISH,
+            "Media body",
+            TemplateCategory.MARKETING,
+            "app-123",
+            null,
+            TemplateParameterFormat.POSITIONAL);
+    template.setMediaUrl(
+        "https://fss.gupshup.io/0/public/bc224495/1782197704193_Captura%20desde%202026-02-04%2009-50-05.png");
   }
 }

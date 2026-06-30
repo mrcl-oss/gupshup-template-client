@@ -63,4 +63,28 @@ public interface GupshupHttpService {
    */
   <T extends BaseGupshupResponse> CompletableFuture<T> deleteAsync(
       String path, Class<T> responseType);
+
+  /**
+   * Uploads a media file.
+   *
+   * @param path The relative path to the endpoint.
+   * @param file The file to upload.
+   * @param responseType The class of the response type.
+   * @param <T> The type of the response.
+   * @return The response from Gupshup.
+   */
+  <T extends BaseGupshupResponse> T uploadMedia(
+      String path, java.io.File file, Class<T> responseType);
+
+  /**
+   * Uploads a media file asynchronously.
+   *
+   * @param path The relative path to the endpoint.
+   * @param file The file to upload.
+   * @param responseType The class of the response type.
+   * @param <T> The type of the response.
+   * @return A CompletableFuture with the response.
+   */
+  <T extends BaseGupshupResponse> CompletableFuture<T> uploadMediaAsync(
+      String path, java.io.File file, Class<T> responseType);
 }

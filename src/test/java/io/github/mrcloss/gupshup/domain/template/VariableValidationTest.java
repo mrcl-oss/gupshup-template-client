@@ -110,4 +110,56 @@ public class VariableValidationTest {
         card::validate,
         "Should fail if carousel card body has variables but no examples");
   }
+
+  @Test
+  void testTemplateGetFilledBody() {
+    Template template =
+        new TextTemplate(
+            "test_template",
+            LanguageCode.ENGLISH,
+            "Hello {{1}} how are you {{2}}?",
+            TemplateCategory.MARKETING,
+            "app-id",
+            Collections.emptyList(),
+            TemplateParameterFormat.POSITIONAL);
+    template.setVariableExamples(java.util.List.of("Alice", "today"));
+
+    org.junit.jupiter.api.Assertions.assertEquals(
+        "Hello Alice how are you today?", template.getFilledBody());
+
+    org.junit.jupiter.api.Assertions.assertEquals(
+        "Hello Bob how are you tomorrow?",
+        template.getFilledBody(java.util.List.of("Bob", "tomorrow")));
+  }
+
+  @Test
+  void testTextTemplateGetFilledHeader() {
+    TextTemplate template =
+        new TextTemplate(
+            "test_template",
+            LanguageCode.ENGLISH,
+            "Body",
+            TemplateCategory.MARKETING,
+            "app-id",
+            Collections.emptyList(),
+            TemplateParameterFormat.POSITIONAL,
+            "Header {{1}}",
+            java.util.List.of("Title"));
+
+    org.junit.jupiter.api.Assertions.assertEquals("Header Title", template.getFilledHeader());
+
+    org.junit.jupiter.api.Assertions.assertEquals(
+        "Header Custom", template.getFilledHeader(java.util.List.of("Custom")));
+  }
+
+  @Test
+  void testCarouselCardGetFilledBody() {
+    CarouselCard card = new CarouselCard("Hello {{1}}!", CarouselCard.CarouselCardHeaderType.IMAGE);
+    card.setVariableExamples(java.util.List.of("Alice"));
+
+    org.junit.jupiter.api.Assertions.assertEquals("Hello Alice!", card.getFilledBody());
+
+    org.junit.jupiter.api.Assertions.assertEquals(
+        "Hello Bob!", card.getFilledBody(java.util.List.of("Bob")));
+  }
 }

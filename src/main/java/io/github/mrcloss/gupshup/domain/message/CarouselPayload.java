@@ -3,8 +3,10 @@ package io.github.mrcloss.gupshup.domain.message;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString(callSuper = true)
 public class CarouselPayload extends GupshupMessage {
 
   private final CardHeaderType cardHeaderType;
@@ -24,6 +26,7 @@ public class CarouselPayload extends GupshupMessage {
   }
 
   @Getter
+  @ToString
   public static class Card {
     private final String link;
 

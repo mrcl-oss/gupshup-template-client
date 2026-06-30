@@ -3,9 +3,11 @@ package io.github.mrcloss.gupshup.domain.button;
 import io.github.mrcloss.gupshup.domain.enums.ButtonType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public abstract class UrlButton extends Button {
 
   public UrlButton() {
