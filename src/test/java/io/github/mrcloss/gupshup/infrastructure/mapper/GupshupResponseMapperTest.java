@@ -393,7 +393,8 @@ class GupshupResponseMapperTest {
     DynamicUrlButton dynBtn = (DynamicUrlButton) buttons.get(1);
     assertEquals("boton2", dynBtn.getText());
     assertEquals("https://example.com{{1}}", dynBtn.getUrlTemplate());
-    assertEquals("https://example.com/hola", dynBtn.getVariableExample());
+    assertEquals("hola", dynBtn.getVariableExample());
+    assertEquals("https://example.com/hola", dynBtn.getReplacedUrl());
   }
 
   @Test
