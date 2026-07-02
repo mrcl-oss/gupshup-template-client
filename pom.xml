@@ -56,7 +56,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <jackson.version>2.18.8</jackson.version>
-        <kotlin.version>1.9.24</kotlin.version>
+        <kotlin.version>2.4.0</kotlin.version>
         <junit.version>6.1.0</junit.version>
         <mockito.version>5.23.0</mockito.version>
         <lombok.version>1.18.30</lombok.version>
